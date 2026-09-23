@@ -1,0 +1,1056 @@
+{
+  "widget_cfg_brightness": "Helligkeit",
+  "motiv_almost": "Fast da! Nur ein bisschen mehr",
+  "about_app": "Über diese App",
+  "description_hint": "Optionale Notiz",
+  "times_per_month": "{n} Mal pro Monat",
+  "@times_per_month": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "app_background": "Hintergrund",
+  "onb2_body": "Tägliche, Wöchentliche oder Monatliche Ziele mit schlauen Erinnerungen damit nichts durchfällt.",
+  "month": "Monat",
+  "quant_preset_reading": "Lesen",
+  "your_habits": "Deine Gewohnheiten",
+  "close": "Schließen",
+  "current": "Aktuell",
+  "streak_off": "💪 Heute kannst du eine neue Serie starten",
+  "save": "Speichern",
+  "widget_today_progress": "Heute  {done}/{total}",
+  "@widget_today_progress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "my_heatmap": "Meine Heatmap",
+  "new_category": "Neue Kategorie",
+  "onb1_body": "Trage deine Gewohnheit mit nur einem Tipp ein und sieh zu, wie du jeden Tag weiterkommst.",
+  "kind_negative_hint": "Jeder Tag zählt standardmäßig als clean — deine Serie wächst von alleine. Tippe das Häckchen nur wenn du einen Ausrutscher hast; der Tag wird rot und du kannst es Rückgängig machen.",
+  "monthly": "Monatlich",
+  "view_source": "Quellcode auf GitHub ansehen",
+  "add_image": "Bild hinzufügen",
+  "widget_cfg_change_image": "Bild ändern",
+  "freq_per_month_short": "{n}×/Monat",
+  "@freq_per_month_short": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "days_active": "Aktive Tage",
+  "remove_photo": "Foto entfernen",
+  "widget_activity": "Aktivität",
+  "widget_cfg_border": "Rand",
+  "accent_color": "Akzent Farbe",
+  "add_step": "Schritt hinzufügen",
+  "every_day": "Jeden Tag",
+  "weekends": "Wochenenden",
+  "get_started": "Los geht's",
+  "steps_done": "{done}/{total} Schritten",
+  "@steps_done": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "good_evening": "Guten Abend",
+  "your_name": "Dein Name",
+  "edit_habit": "Gewohnheit bearbeiten",
+  "onb2_title": "Bleib in der Spur",
+  "good_afternoon": "Guten Nachmittag",
+  "total_logs": "Gesamtprotokolle",
+  "add_reminder": "Erinnerung hinzufügen",
+  "backup_saved": "Backup gespeichert",
+  "widget_opacity": "Deckkraft",
+  "vacation_mode": "Urlaubsmodus",
+  "last_30_days": "Letzten 30 Tage",
+  "bg_oled": "OLED",
+  "stats_empty": "Füge Gewohnheiten hinzu um deine Statistik zu sehen",
+  "when_best": "Wann bist du am konsequentsten?",
+  "next": "Nächstes",
+  "widget_preview": "Vorschau",
+  "completion_time": "Abschluss Zeit",
+  "category_fitness": "Fitness",
+  "import_question_body": "Ersetze deine aktuellen Gewohnheiten mit dem Backup, oder füge sie zusammen?",
+  "widget_done_today": "Heute erledigt",
+  "checklist_hint": "Teile die Gewohnheit in Schritte. Sie ist erst fertig wenn jeder schritt abgehakt ist.",
+  "active_habits": "Erreiche Gewohnheiten",
+  "share_failed": "Konnte kein Bild erstellen",
+  "new_reminder": "Neue Erinnerung",
+  "quant_daily_goal": "Tägliches Ziel",
+  "import_merge": "Zusammenfügen",
+  "relapses": "Ausrutscher",
+  "share_progress": "Fortschritt teilen",
+  "total": "Insgesamt",
+  "best": "Beste",
+  "all": "Alle",
+  "icon": "Icon",
+  "vacation_off_desc": "Pausiere diese Gewohnheit. Ausgelassen Tage werden deine Serie nicht abbrechen.",
+  "import_backup": "Backup importieren",
+  "book_cover": "Buchcover",
+  "days": "Tage",
+  "widget_background": "Hintergrundfarbe",
+  "activity": "Aktivität",
+  "freq_per_week_short": "{n}×/Woche",
+  "@freq_per_week_short": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "motiv_perfect": "Perfekter Tag! 🔥",
+  "on": "An",
+  "add_habit": "Gewohnheit hinzufügen",
+  "edit": "Bearbeiten",
+  "not_enough_data": "Noch nicht genug Daten",
+  "widget_no_habits": "Noch keine Gewohnheiten\nTippe um Streak zu öffnen",
+  "quant_unit_hint": "Einheit (z. B. ml, Seiten, Wiederholungen)",
+  "quant_preset_water": "Wasser",
+  "theme": "Theme",
+  "year": "Jahr",
+  "import_backup_sub": "Gewohnheiten von Datei laden",
+  "about_app_sub": "Version, Impressum und Quellcode",
+  "appearance": "Aussehen",
+  "empty_title": "Starte deine erste Serie",
+  "strength": "Stärke",
+  "description": "Beschreibung",
+  "sched_days": "Tage",
+  "circle": "Kreis",
+  "buy_coffee": "Kauf mir einen Kaffee",
+  "sort_completed_last": "Zuletzt abgeschlossen",
+  "name": "Name",
+  "edit_category": "Kategorie bearbeiten",
+  "save_reminder": "Erinnerung gespeichert",
+  "app_icon": "App-Symbol",
+  "export_backup_sub": "Alle Gewohnheiten als Datei speichern",
+  "preferences": "Vorlieben",
+  "icon_neutral": "Grün",
+  "off": "Aus",
+  "widget_cfg_color": "Farbe",
+  "widget_border": "Rand",
+  "light": "Hell",
+  "square": "Quadrat",
+  "kind_negative": "Vermeiden",
+  "habit_kind": "Gewohnheits Typ",
+  "icon_default": "Standard",
+  "widget_demo_read": "Lesen",
+  "import_failed": "Datei konnte nicht importiert werden",
+  "about_credits_body": "Erstellt mit Flutter. Icons von Lucide. Grafiken von fl_chart. In Figtree & Playfair Display gesetzt.",
+  "category_health": "Gesundheit",
+  "category_mindfulness": "Achtsamkeit",
+  "permission_required": "Benachrichtigungs Erlaubnis wird benötigt",
+  "about_developer": "Der Entwickler",
+  "widget_cfg_saturation": "Sättigung",
+  "customize_widgets_sub": "Hintergrund, Deckkraft, Rand",
+  "select_one_day": "Mindestens einen Tag auswählen",
+  "add_category": "Neu",
+  "about_credits": "Abspann",
+  "category_learning": "Lernen",
+  "delete_habit": "Gewohnheit löschen",
+  "delete": "Löschen",
+  "times_per_week": "{n} Mal pro Woche",
+  "@times_per_week": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "end_vacation": "Urlaub beenden",
+  "notif_greeting": "Hi {name}, ",
+  "@notif_greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dev_handle": "@InlitX",
+  "support": "Support",
+  "weekdays": "Wochentage",
+  "data": "Daten",
+  "best_streak": "Beste Serie",
+  "log_relapse_body": "Deine Serie für \"{name}\" wird unterbrochen. Du kannst es rückgängig machen indem du nochmal tippst.",
+  "@log_relapse_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onb1_title": "Baue echte Serien auf",
+  "frequency": "Frequenz",
+  "import_replace": "Ersetze alle",
+  "no_habits_yet": "Noch keine Gewohnheiten",
+  "made_by": "Gemacht mit ❤️ von @InlitX",
+  "reminder_message_hint": "Leer lassen für ein motivierendes Zitat",
+  "widget_cfg_hue": "Farbton",
+  "delete_habit_body": "Lösche \"{name}\"? Dies kann nicht rückgängig gemacht werden.",
+  "@delete_habit_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "edit_reminder": "Erinnerung bearbeiten",
+  "completions_per_month": "Abschlüsse / Monat",
+  "customize_widgets": "Widgets anpassen",
+  "new_label": "Neu",
+  "cover_image": "Cover Image",
+  "empty_body": "Erstelle eine Gewohnheit und tippe auf einen Tag, um sie einzutragen. Kleine Schritte, jeden Tag.",
+  "current_streak": "Aktuelle Serie",
+  "paused": "Pausiert",
+  "new_habit": "Neue Gewohnheit",
+  "widget_demo_water": "Wasser",
+  "step_hint": "Schritt Name",
+  "skip": "Übersoringen",
+  "buy_coffee_sub": "Hilf mit, die App kostenlos zu halten",
+  "bg_dots": "Ounkte",
+  "kind_quantitative": "Menge",
+  "widget_best_streak": "🔥 {streak} beste Serie",
+  "@widget_best_streak": {
+    "placeholders": {
+      "streak": {
+        "type": "String"
+      }
+    }
+  },
+  "streak_evolution": "Serien Entwicklung",
+  "week_starts_on": "Woche beginnt am",
+  "widget_cfg_dot_color": "Punkt Farbe",
+  "daily": "Täglich",
+  "rate_github_sub": "Unterstütz das Projekt mit einem Stern",
+  "no_data_yet": "Noch keine Daten",
+  "about": "Über",
+  "widget_cfg_choose_image": "Bild auswählen",
+  "see_more": "Mehr anzeigen",
+  "app_tagline": "Gewohnheits-Tracker",
+  "last_7_days": "Letzten 7 Tage",
+  "about_footer": "Gemacht mit ☕ und viele freie Zeit.",
+  "habits_imported": "Gewohnheiten importiert",
+  "mon": "Mo",
+  "quant_unit_ml": "ml",
+  "streaks": "Serien",
+  "quant_edit_title": "Heutige Menge",
+  "reminder_message": "Nachricht (optional)",
+  "streak_on": "🔥 {n} Tage in Folge. Nicht brechen!",
+  "@streak_on": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "export_cancelled": "Export abgebrochen",
+  "widget_cfg_all_habits": "Alle Gewohnheiten",
+  "stats": "Statistik",
+  "motiv_progress": "Du bist auf dem richtigen Weg, weiter so",
+  "advanced_options": "Erweiterte Optionen",
+  "kind_locked_hint": "Typ kann nach erstellen der Gewohnheit nicht mehr verändert werden.",
+  "reorder": "Sortieren",
+  "widget_cfg_image": "Bild",
+  "rate_github": "GitHub Stern geben",
+  "dark": "Dunkel",
+  "widget_cfg_opacity": "Transparenz  {value}%",
+  "@widget_cfg_opacity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "import_from_app": "Von anderer App importieren",
+  "name_hint": "z. B. Morgendlicher Lauf",
+  "cancel": "Abbrechen",
+  "import_from_app_done": "{habits} Gewohnheiten ({days} Tage) von {source} importiert",
+  "@import_from_app_done": {
+    "placeholders": {
+      "habits": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "good_morning": "Guten Morgen",
+  "export_backup": "Backup exportieren",
+  "quant_tap_amount": "Menge pro Klick",
+  "log_relapse_confirm": "Ja, eintragen",
+  "icons_tab": "Icons",
+  "uncategorized": "Unkategorisiert",
+  "github_star_row": "Quelle ansehen & Stern geben",
+  "reorder_hint": "Ziehen Sie die Gewohnheiten, sie zu sortieren",
+  "edit_name": "Name bearbeiten",
+  "category_finance": "Finanzen",
+  "onb3_title": "Sehe deinen Fortschritt",
+  "statistics": "Statistiken",
+  "no_days": "Keine Tage",
+  "checklist": "Checkliste",
+  "language": "Sprache",
+  "sat": "Sa",
+  "widget_no_data": "Noch keine Daten\nÖffne Streak zum synchronisieren",
+  "weekly": "Wöchentlich",
+  "all_done_today": "Alles erledigt für Heute!",
+  "overview": "Überblick",
+  "kind_positive": "Normal",
+  "icon_accent": "dreifarbig",
+  "repeat_weekly": "Ausgewählte Tage",
+  "widget_cfg_title": "Widget anpassen",
+  "week": "Woche",
+  "onb3_body": "Umfangreiche Statistiken und eine Jahresübersicht zeigen dir wie weit du bist.",
+  "more_icons": "Mehr Icons",
+  "delete_category": "Kategorie löschen",
+  "widgets": "Widgets",
+  "widget_open_to_sync": "Öffne Streak um zu synchronisieren",
+  "settings": "Einstellungen",
+  "widget_cfg_custom_color": "Benutzerdefinierte Farbe",
+  "todays_checklist": "Heutige Checkliste",
+  "go": "Los",
+  "quant_preset_generic": "Benutzerdefiniert",
+  "x_of_y_completed": "{done} von {total} geschafft",
+  "@x_of_y_completed": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "completion_rate": "Abschlussrate",
+  "colors_tab": "Farben",
+  "category": "Kategorie",
+  "category_productivity": "Produktivität",
+  "system": "System",
+  "less_icons": "Weniger Icons",
+  "my_heatmap_sub": "Jahresübersicht öffnen",
+  "quant_unit_pages": "Seiten",
+  "share": "Teilen",
+  "sun": "So",
+  "motiv_start": "Starte den Tag kräftig 💪",
+  "about_body": "Streak wurde von einer einfachen Idee geboren: warum zum tracken von seinen eigenen Gewohnheiten bezahlen?\n\nDiese App ist komplett open source. Jeder kann genau sehen wie sie funktioniert, Verbesserungen vorschlagen, oder sogar eine eigene Version bauen. Keine Black-Boxen. Keine Überraschungen.\n\nDeine Privatsphäre ist komplett — Alles bleibt auf deinem Gerät. Keine Account, keine Server, keine Werbung. Kein einziger Byte verlässt dein Handy.\n\nKeine EInschränkungen. Erstelle so viele Gewohnheiten wie du willst. Keine Abos, keine \"Pro Version\", keine Pop-Ups die nach Geld frage. Jemals.\n\nWenn die App dir hilft kannst du sie mit einem Stern auf GitHub oder indem du mir einen Kaffee kaufst unterstützen. Doch das ist komplett optional — die App bekommst du so oder so.",
+  "done_today": "Alles erledigt für Heute",
+  "widget_cfg_reset": "Zurücksetzen",
+  "time": "Zeit",
+  "widget_cfg_thickness": "Dicke  {value}dp",
+  "@widget_cfg_thickness": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "every_n_days": "Alle {n} Tage",
+  "@every_n_days": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "log_relapse_title": "Ausrutscher eintragen?",
+  "custom": "Benutzerdefiniert",
+  "about_title": "Für dich gebaut. Frei, für immer.",
+  "repeat_interval": "Alle N Tage",
+  "color": "Farbe",
+  "widget_cfg_add": "Widget hinzufügen",
+  "emojis_tab": "Emojis",
+  "sched_interval": "Intervall",
+  "change_photo": "Foto ändern",
+  "today": "Heute",
+  "widget_cfg_show_activity": "Aktivität anzeigen von",
+  "vacation_on_desc": "Pausiert — diese tage zählen nicht als verfehlt oder abgeschlossen.",
+  "profile": "Profil",
+  "widget_cfg_save": "Speichern",
+  "start_vacation": "Urlaub anfangen",
+  "done": "Fertig",
+  "reminders": "Erinnerungen",
+  "focus_end_keep": "Mach weiter",
+  "share_friends_sub": "Schicke ihnen die App",
+  "about_story": "Diese App wurde aus Frustration mit den existenten Gewohnheits-Tracken geboren. Die meisten beschränken wie viele Gewohnheiten du erstellen kannst, haben grundlegend Features hinter einer paywall, sammeln deine Daten oder bombardieren dich mit Werbung. Also erstellte ich Streak: komplett offen, keine Werbung, keine Zahlungen, kein Tracking. Alles läuft lokal — deine Daten sind deins. Open source, ohne Haken.",
+  "focus_saved": "{time} aufgezeichnet",
+  "@focus_saved": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "note_photos": "Bilder",
+  "auto_backup_run_now": "Jetzt Sicherungskopie erstellen",
+  "about_subtitle": "Für die Tage an denen du da bist.",
+  "wipe_data_sub": "Gewohnheiten, Notizen, Fokus Sessions und Einstellungen",
+  "focus_your_tracks": "Deine Titel",
+  "completion_rate_short": "Konsequenz",
+  "notif_streak": "🔥 {streak} Tagesserie",
+  "@notif_streak": {
+    "placeholders": {
+      "streak": {
+        "type": "String"
+      }
+    }
+  },
+  "message_copied": "Nachricht kopiert",
+  "share_background": "Hintergrund",
+  "focus_sessions": "Sitzungen",
+  "focus_amount_added": "{amount} hinzugefügt zu {habit}",
+  "@focus_amount_added": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "habit": {
+        "type": "String"
+      }
+    }
+  },
+  "notes_empty": "Noch keine Notizen für diesen Tag",
+  "consistency_trend": "Konsequenz Trend",
+  "archived_empty_sub": "Gewohnheiten die du löschst landen hier, mit ihrem Verlauf.",
+  "wipe_data_sure": "Wirklich alles löschen?",
+  "day_start_hour": "{hour}:00",
+  "@day_start_hour": {
+    "placeholders": {
+      "hour": {
+        "type": "String"
+      }
+    }
+  },
+  "about_inline": "Streak ist eine open source App um Gewohnheiten zu tracken. Keine Accounts, keine Limits, keine Zahlungen. Alles bleibt auf deinem Gerät.\n\nJeder kann den Code sehen, verbessern, oder selber verwenden.",
+  "ranking": "Rangliste",
+  "count_months": "{count, plural, =1{1 Monat} other{{count} Monate}}",
+  "@count_months": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "delete_note": "Notiz löschen",
+  "notif_action_add_hint": "Wie viel?",
+  "today_only": "Nur von heute",
+  "archive_habit_body": "\"{name}\" zum Archiv bewegen? Der Verlauf wird behalten und du kannst sie in den Einstellungen wiederherstellen.",
+  "@archive_habit_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "per_week": "Pro Woche",
+  "focus_end_anyway": "Trotzdem beenden",
+  "snooze_custom_hint": "Minuten",
+  "bg_solid": "Fest",
+  "focus_custom_duration": "Benutzerdefinierte",
+  "focus_tasks": "Unteraufgabe auflisten",
+  "style_classic": "Klassisch",
+  "focus_history_day": "{count, plural, =1{1 Sitzung} other{{count} Sitzungen}}",
+  "@focus_history_day": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "focus_pomodoro": "Pomodoro",
+  "share_show_stats": "Statistiken anzeigen",
+  "about_sub": "Version, Quellcode und Support",
+  "focus_track_pad": "Warmes Pad",
+  "style_classic_desc": "Gewohnheiten-Liste, untere Leiste und alle Einstellungen auf einer Seite.",
+  "focus_history": "Verlauf",
+  "save_note": "Notiz speichern",
+  "focus_end_complete": "Als erledigt markieren",
+  "archived_empty": "Nichts archiviert",
+  "focus_scene_black": "Schwarz",
+  "share_swipe_hint": "",
+  "focus_free_session": "Freie Sitzung",
+  "day_start_midnight": "Mitternacht",
+  "share_size": "Größe",
+  "focus_track_too_long": "Titel müssen kürzer als 20 Minuten sein",
+  "dev_role": "Indie maker · Streak",
+  "focus_style_dots": "Punkte",
+  "journey_empty": "Noch keine Bilder",
+  "share_stats_short": "Statistiken",
+  "share_save": "Speichern",
+  "app_style_sub": "Aussehen und Gefühl der ganzen App anpassen.",
+  "app_lock_sub": "Nutze deinen Fingerabdruck oder Gesicht um Streak zu öffnen",
+  "auto_backup_daily": "Täglich",
+  "restore": "Wiederherstellen",
+  "preferences_sub": "Sprache, Woche und Sortierung",
+  "auto_backup_no_permission": "Keine Speicherberechtigung",
+  "focus_built_in": "Eingebaut",
+  "focus_sound": "Klänge",
+  "add_note": "Notiz hinzufügen",
+  "share_photo": "Bild",
+  "note_kind_planned": "Geplant",
+  "default_user": "Inlitx",
+  "share_saved": "In der Galerie gespeichert",
+  "count_days": "{count, plural, =1{1 Tag} other{{count} Tage}}",
+  "@count_days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wipe_data_confirm": "Alles Löschen",
+  "unit_minutes": "Minuten",
+  "share_blur": "Unschärfe",
+  "focus_end_reached": "Ziel erreicht. Die Gewohnheit wird als erledigt markiert.",
+  "focus_personalize": "Benutzerdefiniert",
+  "focus_history_empty": "Noch keine Sitzungen",
+  "unit_seconds": "Sekunden",
+  "focus_enable_sub": "Ein Timer für Gewohnheiten, die einen benötigen",
+  "focus_shuffle": "",
+  "focus_goal_today": "",
+  "@focus_goal_today": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "edit_entry": "Eintrag bearbeiten",
+  "delete_forever_body": "\"{name}\" löschen und sein ganzen Verlauf? Dies kann nicht rückgängig gemacht werden.",
+  "@delete_forever_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "focus_add_track": "Titel hinzufügen",
+  "count_weeks": "{count, plural, =1{1 Woche} other{{count} Wochen}}",
+  "@count_weeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "snooze_duration": "Schlummern für",
+  "notes": "Notizen",
+  "focus_no_sound": "Kein Titel ausgewählt",
+  "wipe_data": "Alle Daten löschen",
+  "auto_backup_weekly": "Wöchentlich",
+  "app_style": "App-Stil",
+  "wipe_data_done": "Alle Daten wurden gelöscht",
+  "focus_pick_habit": "Worauf fokussierst du dich?",
+  "unit_min_short": "Min.",
+  "widget_cfg_style": "Stil",
+  "day_start": "Tagesanfang",
+  "notif_action_snooze": "Schlummern",
+  "note_take_photo": "Kamera",
+  "delete_forever": "Endgültig löschen",
+  "snooze_custom": "Benutzerdefiniert",
+  "auto_backup_folder_failed": "In diesem Ordner kann nicht geschrieben werden",
+  "note_hint": "Schreibe deine Notiz...",
+  "focus_style_digital": "Kreis",
+  "focus_stop_body": "Deine Minuten werden so oder so gespeichert. Die Gewohnheit gilt jedoch erst als abgeschlossen, wenn du das Ziel erreichst.",
+  "app_lock_unlock": "Entsperren",
+  "auto_backup_folder_default": "App Ordner",
+  "tomorrow": "Morgen",
+  "perfect_days": "Perfekte Tage",
+  "focus_round": "Runde {n}",
+  "@focus_round": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "journey": "Reise",
+  "notif_action_add": "Betrag hinzufügen",
+  "minutes_short": "{value} Min.",
+  "@minutes_short": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_cfg_style_card": "Karte",
+  "bg_gradient": "Übergang",
+  "focus_target_reached": "Ziel erreicht",
+  "share_friends_message": "Ich verfolge meine Serien mit Streak — ein kleiner, kostenloser, offline Gewohnheits-Tracker ohne Werbung. Bau auch du deine Serien mit Streak: https://inlitx.github.io/streak/",
+  "note_kind_completed": "Abgeschlossen",
+  "focus_break": "Pause",
+  "undo": "Rückgängig",
+  "focus_style": "Timer Stil",
+  "support_sub": "Fehler Melden oder eine neue Funktion vorschlagen",
+  "note_type": "Typ",
+  "focus_scene_custom": "Dein Bild",
+  "journey_sub": "{count, plural, =1{1 Bild} other{{count} Bilder}}",
+  "@journey_sub": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "focus": "Fokus",
+  "wipe_data_warning": "Dadurch werden alle Gewohnheiten, Notizen, Fokus-Sitzungen und Einstellungen auf diesem Gerät gelöscht. Dies kann nicht rückgängig gemacht werden, es sei denn, Sie haben eine Backup-Datei, die Sie anschließend importieren können.",
+  "auto_backup_where": "Eine Sicherungskopie ist erstellt wenn du die App öffnest. Die letzten 5 werden behalten.",
+  "widget_demo_run": "Ausführen",
+  "widget_cfg_style_classic": "Klassisch",
+  "archived_habits_sub": "Stelle sie wieder her oder lösche sie endgültig",
+  "note_kind_note": "Notiz",
+  "focus_pomodoro_sub": "",
+  "focus_duration": "Dauer",
+  "focus_images_limit": "Bis zu 10 Bilder",
+  "edit_note": "Notiz bearbeiten",
+  "notes_hint": "Halte einen Tag gedrückt, um Notizen anzuzeigen oder hinzuzufügen",
+  "focus_total": "Fokus Zeit",
+  "share_size_large": "Groß",
+  "share_size_small": "Quadrat",
+  "yesterday": "Gestern",
+  "focus_resume": "Fortfahren",
+  "app_lock_title": "Streak ist gesperrt",
+  "archived_habits": "Archivierte Gewohnheiten",
+  "restored": "Gewohnheit wiederhergestellt",
+  "see_less": "Weniger anzeigen",
+  "habit_archived": "Gewohnheit archiviert",
+  "import_from_app_sub": "Loop Habit Tracker, HabitKit…",
+  "share_friends": "Mit Freunden teilen",
+  "auto_backup_off": "Aus",
+  "journey_empty_sub": "Füge ein Bild zu einer Notiz hinzu und es erscheint hier.",
+  "auto_backup_folder": "Ordner",
+  "focus_end": "Ende",
+  "focus_pick_audio": "Wähle einen Titel von deinem Gerät",
+  "notif_action_done": "Erledigt",
+  "focus_history_empty_sub": "Jede beendete Fokus-Sitzung wird hier angezeigt.",
+  "auto_backup_sub": "Aus",
+  "best_month": "Bester Monat",
+  "share_save_failed": "Bild konnte nicht gespeichert werden",
+  "consistency": "Konsistenz",
+  "focus_done_title": "Sitzung abgeschlossen",
+  "note_pick_photo": "Gallerie",
+  "notes_count": "{count, plural, =1{1 Notiz} other{{count} Notizen}}",
+  "@notes_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "app_lock_failed": "Konnte nicht verifizieren",
+  "focus_style_flip": "Flip",
+  "legend_note_added": "Notiz hinzugefügt",
+  "style_minimal": "Minimal",
+  "vacation_day_on": "Markiere als Ferientag",
+  "auto_backup": "Automatische Sicherheitskopie",
+  "day_start_sub": "Späte Stunden zählen noch zum Vortag.",
+  "focus_notif_body": "Deine Fokus-Sitzung ist vorbei. Gut gemacht!",
+  "app_lock_unavailable": "Biometrie Sperre nicht Verfügbar",
+  "auto_backup_folder_set": "Ordner gespeichert",
+  "archive_habit": "Aktive Gewohnheit",
+  "focus_track_limit": "Bis zu 10 Titel",
+  "check_style": "Stil prüfen",
+  "style_minimal_desc": "Gewohnheiten-Raster und Einstellungen in vier Bereiche unterteilt.",
+  "focus_keep_awake": "Bildschirm eingeschaltet lassen",
+  "data_sub": "Backups und Import",
+  "note_time_optional": "Zeit (optional)",
+  "focus_pause": "Pause",
+  "focus_track_rain": "Regen",
+  "unit_hours": "Stunden",
+  "focus_end_tasks": "{count} Aufgaben sind noch offen.",
+  "@focus_end_tasks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notes_enable_sub": "Füge Notizen zu jedem Tag einer Gewohnheit hinzu",
+  "wipe_data_sure_body": "Bist du sicher? Ohne ein Backup werden die Daten für immer gelöscht.",
+  "archive": "Archiv",
+  "completions": "Abschluss",
+  "focus_start": "Sitzung beginnen",
+  "focus_stop_title": "Sitzung beenden?",
+  "vacation_day_off": "Entferne Ferientag",
+  "app_lock": "App Sperre",
+  "by_habit": "Pro Gewohnheit",
+  "deleted_forever": "Gewohnheit gelöscht",
+  "focus_loop": "In Reihenfolge",
+  "focus_daily_goal": "Fokusziel",
+  "copy_message": "Nachricht kopieren",
+  "view_notes": "Notizen anschauen",
+  "focus_track_brown": "Braunes Rauschen",
+  "focus_end_short": "Du bist {time} vom Ziel entfernt.",
+  "@focus_end_short": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "appearance_sub": "Design, Akzentfarbe und Hintergrund",
+  "active_days": "Aktive Tage",
+  "a11y_add_amount": "Hinzufügen zu {name}",
+  "@a11y_add_amount": {
+    "description": "Screen reader label for the button that adds progress to a quantitative habit",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11y_decrease": "Verringern",
+  "@a11y_decrease": {
+    "description": "Screen reader label for the minus button of a number stepper"
+  },
+  "a11y_not_done": "Nicht erledigt",
+  "@a11y_not_done": {
+    "description": "Screen reader state of a day that has not been logged"
+  },
+  "a11y_increase": "Erhöhen",
+  "@a11y_increase": {
+    "description": "Screen reader label for the plus button of a number stepper"
+  },
+  "a11y_clear_relapse": "Heutigen Rückfall für {name} löschen",
+  "@a11y_clear_relapse": {
+    "description": "Screen reader label for the button that removes today's relapse",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11y_log_relapse": "Rückfall eintragen für {name}",
+  "@a11y_log_relapse": {
+    "description": "Screen reader label for the button that logs a relapse on a habit to avoid",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11y_mark_done": "Mariere {name} als erledigt",
+  "@a11y_mark_done": {
+    "description": "Screen reader label for the button that logs a habit",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11y_mark_not_done": "Markiere {name} als offen",
+  "@a11y_mark_not_done": {
+    "description": "Screen reader label for the button that undoes a habit",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "a11y_pick_color": "Wähle eine Farbe",
+  "@a11y_pick_color": {
+    "description": "Screen reader label for a colour swatch in the picker"
+  },
+  "quant_per_day": "Menge pro Tag",
+  "app_lock_delay_instant": "Sofort",
+  "app_lock_delay_seconds": "{value} Sekunden",
+  "@app_lock_delay_seconds": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "clear_progress": "Klarer Fortschritt",
+  "clear_progress_sub": "Verlauf, Notizen und Fokus Sitzungen",
+  "clear_progress_confirm": "Klarer Fortschritt",
+  "clear_progress_done": "Fortschritt gelöscht",
+  "widget_cfg_todos_scope": "Aufgaben",
+  "todo_time": "Zeit",
+  "vacation_all_sub": "Nichts zählt als verfehlt, solange es eingeschaltet ist",
+  "currency_hint": "Symbol oder Code",
+  "money_saved": "Gespartes Geld",
+  "focus_notif_running": "Fokussieren",
+  "rest_days_none": "Keine",
+  "expand_cards": "Karten aufklappen",
+  "todo_overdue": "Überfällig",
+  "todo_no_date": "Kein Datum",
+  "clean_days": "Tage ohne",
+  "cost_per_day": "Kosten pro Tag",
+  "habit_duration": "Dauer",
+  "quotes_edit": "Zitat bearbeiten",
+  "quotes_app": "Aus der App",
+  "focus_only_title": "Benötigt eine Fokus-Sitzung",
+  "focus_only_past": "„{name}“ wird nur durch eine Fokus-Sitzung abgeschlossen, daher können vergangene Tage nicht abgehakt werden.",
+  "@focus_only_past": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "currency": "Währung",
+  "quote_11": "Disziplin ist Freiheit.",
+  "focus_average": "Durchschnittliche Sitzung",
+  "quotes_empty_sub": "Schreib deine eigenen und sie erscheinen bei „Heute“.",
+  "focus_only_body": "\"{name}\" wird durch das beenden einer Fokus-Sitzung abgeschlossen.",
+  "@focus_only_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_cfg_dark_color": "Dunkles Design",
+  "focus_clear_today": "Heutige Sitzungen löschen",
+  "focus_end_flow": "Du hast dich {time} konzentriert.",
+  "@focus_end_flow": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "view_switcher": "Ansichtenwechsler",
+  "quote_2": "Kontinuität schlägt Intensität.",
+  "card_activity": "Kartenaktivität",
+  "clear": "Aufräumen",
+  "pick_a_date": "Wähle ein Datum",
+  "clear_progress_warning": "Dadurch werden alle protokollierten Tage, Notizen und Fokus-Sitzungen gelöscht, aber Ihre Gewohnheiten, deren Zeitpläne und Ihre Einstellungen bleiben erhalten. Dies kann nicht rückgängig gemacht werden, es sei denn, Sie haben eine Backup-Datei, die Sie anschließend importieren können.",
+  "celebration_surprise": "Überrasche mich",
+  "quote_1": "Jeden Tag kleine Schritte.",
+  "quote_6": "Fertig ist besser als perfekt.",
+  "rest_days": "Ruhetage",
+  "todo_empty_body": "Schreib auf was du in den nächsten Tagen erledigen willst.",
+  "day_timeline_empty_sub": "Gib Gewohnheiten eine Uhrzeit, damit sie hier angezeigt werden.",
+  "todo_date": "Datum",
+  "todo_completed_count": "{count, plural, =1{Erledigt (1)} other{Erledigt ({count})}}",
+  "@todo_completed_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "a11y_previous_week": "Vorherige Woche",
+  "habit_duration_none": "Keine Dauer",
+  "quant_average": "Durchschnitt pro Tag",
+  "prefs_privacy": "Privatsphäre",
+  "report_issue": "Fehler Melden",
+  "widget_cfg_light_color": "Helles Thema",
+  "focus_paused": "Pausiert",
+  "todos_enable_sub": "",
+  "focus_delete_sessions_body": "",
+  "@focus_delete_sessions_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "plan_day": "Plane den Tag",
+  "celebration": "Vervollständigungseffekt",
+  "habit_time": "Uhrzeit",
+  "todo_empty_title": "Nichts auf der Liste",
+  "vacation_all": "Pausiere alle Gewohnheiten",
+  "quote_5": "Fortschritt statt Perfektion.",
+  "start_view": "Öffnet heute um",
+  "priority_none": "Keine Priorität",
+  "last_90_days": "Letze 90 Tage",
+  "todo_hint": "Was muss gemacht werden?",
+  "a11y_next_week": "Nächste Woche",
+  "quote_4": "Ein Tag nach dem anderen.",
+  "day_timeline": "Tag",
+  "celebration_confetti": "Konfetti",
+  "select_all": "Alle auswählen",
+  "widget_todos_empty": "Das war’s für heute.",
+  "quote_7": "Erhalte die Serie aufrecht.",
+  "quotes_add": "Zitat hinzufügen",
+  "unscheduled_confirm": "Trotzdem aufzeichnen",
+  "priority_low": "Niedrig",
+  "unscheduled_title": "Tag nicht geplant",
+  "quotes_empty": "Keine eigenen Zitate",
+  "start_view_last": "Zuletzt benutzt",
+  "todo_new": "Neue To-Do",
+  "todo_priority": "Priorität",
+  "focus_sessions_deleted": "{count, plural, =1{1 Sitzung gelöscht} other{{count} Sitzungen gelöscht}}",
+  "@focus_sessions_deleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quotes_which": "Welche Zitate",
+  "repeat_hours": "Tagsüber wiederholen",
+  "plan_day_sub": "Gib Gewohnheiten eine Uhrzeit, damit sie auf der Zeitleiste angezeigt werden.",
+  "unit_hour_short": "Std.",
+  "todo_someday": "Irgendwann",
+  "day_timeline_anytime": "Jederzeit",
+  "quote_12": "Heute zählt.",
+  "quant_logged_days": "Aufgezeichnete Tage",
+  "quote_3": "Steh für dich ein.",
+  "widget_cfg_todos_hint": "Aus: nur heutige, überfällige und undatierte Aufgaben",
+  "focus_only_start": "Sitzung starten",
+  "selected_count": "{count, plural, =1{1 Ausgewählt} other{{count} Ausgewählt}}",
+  "@selected_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "focus_defaults": "Standart Sitzungseinstellungen",
+  "priority_medium": "Mittel",
+  "prefs_features": "Merkmale",
+  "todo_left": "{count, plural, =0{Alles erledigt} =1{1 zu erledigen} other{{count} zu erledigen}}",
+  "@todo_left": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "unscheduled_body": "",
+  "@unscheduled_body": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "widget_todos_open": "",
+  "@widget_todos_open": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "currency_custom": "Benutzerdefiniert",
+  "quant_best_day": "Bester Tag",
+  "focus_log_saved": "Sitzung hinzugefügt",
+  "quant_stats_empty": "Trage einen Betrag ein und er wird hier zusammengerechnet – selbst an Tagen, an denen du dein Ziel nicht ganz erreichst.",
+  "quant_goal_days": "Ziel erreicht",
+  "widget_cfg_todos_all": "Alle Aufgaben anzeigen",
+  "todo_upcoming": "Bevorstehend",
+  "focus_log_date": "Datum",
+  "quotes_my_list": "Meine Zitate",
+  "prefs_general": "Allgemein",
+  "widget_cfg_follow_system": "An Systemdesign anpassen",
+  "day_timeline_empty": "Nichts für diesen Tag geplant",
+  "todo_clear_completed": "Erledigte löschen",
+  "quote_10": "Meistere den Morgen.",
+  "focus_flowtime_hint": "Kein Ziel und kein Alarm. Die Uhr zählt hoch und du hörst auf wenn du fertig bist.",
+  "focus_notif_channel": "Fokus-Sitzungen",
+  "quotes": "Zitate",
+  "todo_clear_completed_body": "",
+  "@todo_clear_completed_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quotes_hint": "Schreibe dein Zitat",
+  "quote_9": "Der Weg ist das Ziel.",
+  "every_n_hours": "Alle {n} Std.",
+  "@every_n_hours": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "focus_stats": "Fokus-Statistiken",
+  "app_lock_delay": "Anschließend Sperren",
+  "focus_log": "Sitzung eintragen",
+  "quote_8": "Kleine Gewohnheiten, große Auswirkung.",
+  "collapse_cards": "Karten einklappen",
+  "focus_only_hint": "Die Gewohnheit wird abgehakt, wenn du eine Sitzung beendest, nicht durch Antippen.",
+  "view_switcher_sub": "Woche-/Monat-/Jahr-Buttons in „Heute“ einblenden",
+  "todos": "Zu erledigen",
+  "quotes_mine": "Meine",
+  "cost_note": "Optional. Leer lassen, wenn diese Gewohnheit kein Geld kostet.",
+  "focus_only": "Nur mit einer Fokus-Sitzung",
+  "priority_high": "Hoch",
+  "focus_delete_sessions": "Sitzungen löschen?",
+  "rest_days_desc": "An diesen Tagen jede Woche pausieren. Du kannst sie trotzdem eintragen und sie werden mitgezählt.",
+  "day_timeline_free": "{span} frei",
+  "@day_timeline_free": {
+    "placeholders": {
+      "span": {
+        "type": "String"
+      }
+    }
+  },
+  "celebration_fireworks": "Feuerwerk",
+  "habit_time_none": "Jederzeit",
+  "perfect_streak": "Serie perfekter Tage",
+  "focus_flowtime": "Flowtime",
+  "quotes_both": "Beide",
+  "todo_search_empty": "Keine Übereinstimmungen",
+  "average_short": "Ø",
+  "period_last_week": "Letzte Woche",
+  "period_this_month": "Diesen Monat",
+  "period_last_month": "Letzen Monat",
+  "period_this_year": "Dieses Jahr",
+  "period_last_year": "Letztes Jahr",
+  "notes_all": "Alle Notizen",
+  "notes_empty_all": "Keine Notizen bisher",
+  "quant_preset_time": "Zeit",
+  "style_express": "Ausdruck",
+  "style_express_desc": "Abgerundete Formen, federnde Bewegungen und eine breitere Schriftart.",
+  "celebration_none": "Keine",
+  "quant_add_title": "Anzahl hinzufügen",
+  "pane_hint": "Öffne etwas von der Liste, um es hier zu sehen",
+  "period_this_week": "Diese Woche",
+  "todo_search": "Durchsuche To-Dos",
+  "heatmap_path": "Verbinde die Tage",
+  "heatmap_path_sub": "Zeichnet das Gitter in einem durchgehenden Pfad",
+  "focus_only_clear_body": "Nur eine Fokus-Sitzung kann „{name}“ wieder abhaken.",
+  "@focus_only_clear_body": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "period_week_of": "Woche vom {date}",
+  "@period_week_of": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "focus_period_sessions": "{count, plural, =0{Keine Sitzungen} =1{1 Sitzung} other{{count} Sitzungen}}",
+  "@focus_period_sessions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "refresh_now": "Aktualisieren"
+}
