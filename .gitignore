@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Private backups
+phone_streak_backup_*.json
+*.ab
+
+# Backend
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/.env.local
+
+# Flutter / Client
+client/.dart_tool/
+client/.flutter-plugins
+client/.flutter-plugins-dependencies
+client/.pub-cache/
+client/.pub/
+client/build/
+client/android/.gradle/
+client/android/app/build/
+client/android/.kotlin/
+client/macos/Pods/
+client/macos/Flutter/ephemeral/
+client/ios/Pods/
+client/ios/Flutter/ephemeral/
+client/.git_original/
