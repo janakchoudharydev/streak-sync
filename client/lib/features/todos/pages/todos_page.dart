@@ -19,6 +19,7 @@ import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/core/express/express_button.dart';
 import 'package:streak/core/minimal/minimal_kit.dart';
 import 'package:streak/core/express/express_surface.dart';
+import 'package:streak/core/sync/sync_controller.dart';
 import 'package:streak/features/habits/data/category.dart';
 import 'package:streak/features/todos/data/todo.dart';
 import 'package:streak/features/todos/data/todo_groups.dart';
@@ -267,97 +268,116 @@ class _TodosPageState extends State<TodosPage> {
                   onSelected: (id) => setState(() => _tagFilter = id),
                 ),
               Expanded(
-                child: _folders
-                    ? SingleChildScrollView(
-                        padding: context.pagePadding(
-                          minimal ? 22 : 16,
-                          4,
-                          minimal ? 22 : 16,
-                          minimal ? 96 : 148,
-                        ),
-                        child: TodoProjects(onOpen: _openFolder),
-                      )
-                    : sections.isEmpty && completed.isEmpty
-                    ? (!_filtering
-                        ? _EmptyState(onAdd: _compose)
-                        : AppEmptyState(
-                            icon: _query.isEmpty
-                                ? LucideIcons.tag
-                                : LucideIcons.search,
-                            title: context.l10n.todo_search_empty,
-                          ))
-                    : ListView(
-              padding: context.pagePadding(
-                minimal ? 22 : 16,
-                minimal || express ? 0 : 8,
-                minimal ? 22 : 16,
-                minimal ? 96 : 148,
-              ),
-              children: [
-                if (minimal)
-                  MinimalTitle(
-                    title: context.l10n.todos,
-                    subtitle: context.l10n.todo_left(todos.pendingCount),
-                  ),
-                if (express) ...[
-                  ExpressHeadline(
-                    title: context.l10n.todos,
-                    subtitle: context.l10n.todo_left(todos.pendingCount),
-                  ),
-                  const SizedBox(height: 18),
-                ],
-                for (final section in sections) ...[
-                  _SectionHeader(
-                    label: todoGroupLabel(context, section.group),
-                    count: section.todos.length,
-                    danger: section.group == TodoGroup.overdue,
-                  ),
-                  for (final (index, todo) in section.todos.indexed)
-                    Entrance(
-                      key: ValueKey(todo.id),
-                      index: index,
-                      child: _Swipeable(
-                        todo: todo,
-                        corners: _corners(express, index, section.todos.length),
-                        onDelete: () => _delete(todo),
-                        child: TodoTile(
-                          todo: todo,
-                          overdue: section.group == TodoGroup.overdue,
-                          corners:
-                              _corners(express, index, section.todos.length),
-                          showProject: _projectFilter == null,
-                          onToggle: () => todos.toggle(todo.id),
-                          onEdit: () => _open(todo),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(height: 10),
-                ],
-                if (completed.isNotEmpty) ...[
-                  _CompletedHeader(
-                    count: completed.length,
-                    expanded: _showCompleted || _query.isNotEmpty,
-                    onTap: () =>
-                        setState(() => _showCompleted = !_showCompleted),
-                  ),
-                  if (_showCompleted || _query.isNotEmpty)
-                    for (final (index, todo) in completed.indexed)
-                      _Swipeable(
-                        todo: todo,
-                        corners: _corners(express, index, completed.length),
-                        onDelete: () => _delete(todo),
-                        child: TodoTile(
-                          todo: todo,
-                          overdue: false,
-                          corners: _corners(express, index, completed.length),
-                          showProject: _projectFilter == null,
-                          onToggle: () => todos.toggle(todo.id),
-                          onEdit: () => _open(todo),
-                        ),
-                      ),
-                ],
-              ],
-            ),
+                child: RefreshIndicator(
+                  color: minimal
+                      ? context.colors.onSurface
+                      : context.colors.primary,
+                  onRefresh: () async {
+                    final sync = context.read<SyncController>();
+                    final todosCtrl = context.read<TodosController>();
+                    await sync.triggerSync();
+                    todosCtrl.reload();
+                  },
+                  child: _folders
+                      ? SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: context.pagePadding(
+                            minimal ? 22 : 16,
+                            4,
+                            minimal ? 22 : 16,
+                            minimal ? 96 : 148,
+                          ),
+                          child: TodoProjects(onOpen: _openFolder),
+                        )
+                      : sections.isEmpty && completed.isEmpty
+                          ? ListView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              children: [
+                                if (!_filtering)
+                                  _EmptyState(onAdd: _compose)
+                                else
+                                  AppEmptyState(
+                                    icon: _query.isEmpty
+                                        ? LucideIcons.tag
+                                        : LucideIcons.search,
+                                    title: context.l10n.todo_search_empty,
+                                  ),
+                              ],
+                            )
+                          : ListView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: context.pagePadding(
+                                minimal ? 22 : 16,
+                                minimal || express ? 0 : 8,
+                                minimal ? 22 : 16,
+                                minimal ? 96 : 148,
+                              ),
+                              children: [
+                                if (minimal)
+                                  MinimalTitle(
+                                    title: context.l10n.todos,
+                                    subtitle: context.l10n.todo_left(todos.pendingCount),
+                                  ),
+                                if (express) ...[
+                                  ExpressHeadline(
+                                    title: context.l10n.todos,
+                                    subtitle: context.l10n.todo_left(todos.pendingCount),
+                                  ),
+                                  const SizedBox(height: 18),
+                                ],
+                                for (final section in sections) ...[
+                                  _SectionHeader(
+                                    label: todoGroupLabel(context, section.group),
+                                    count: section.todos.length,
+                                    danger: section.group == TodoGroup.overdue,
+                                  ),
+                                  for (final (index, todo) in section.todos.indexed)
+                                    Entrance(
+                                      key: ValueKey(todo.id),
+                                      index: index,
+                                      child: _Swipeable(
+                                        todo: todo,
+                                        corners: _corners(express, index, section.todos.length),
+                                        onDelete: () => _delete(todo),
+                                        child: TodoTile(
+                                          todo: todo,
+                                          overdue: section.group == TodoGroup.overdue,
+                                          corners:
+                                              _corners(express, index, section.todos.length),
+                                          showProject: _projectFilter == null,
+                                          onToggle: () => todos.toggle(todo.id),
+                                          onEdit: () => _open(todo),
+                                        ),
+                                      ),
+                                    ),
+                                  const SizedBox(height: 10),
+                                ],
+                                if (completed.isNotEmpty) ...[
+                                  _CompletedHeader(
+                                    count: completed.length,
+                                    expanded: _showCompleted || _query.isNotEmpty,
+                                    onTap: () =>
+                                        setState(() => _showCompleted = !_showCompleted),
+                                  ),
+                                  if (_showCompleted || _query.isNotEmpty)
+                                    for (final (index, todo) in completed.indexed)
+                                      _Swipeable(
+                                        todo: todo,
+                                        corners: _corners(express, index, completed.length),
+                                        onDelete: () => _delete(todo),
+                                        child: TodoTile(
+                                          todo: todo,
+                                          overdue: false,
+                                          corners: _corners(express, index, completed.length),
+                                          showProject: _projectFilter == null,
+                                          onToggle: () => todos.toggle(todo.id),
+                                          onEdit: () => _open(todo),
+                                        ),
+                                      ),
+                                ],
+                              ],
+                            ),
+                ),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { AuthService, authMiddleware, AuthenticatedRequest } from './services/auth';
 import { SyncEngine } from './services/syncEngine';
+import { db } from './db';
 
 export const app = express();
 
@@ -29,6 +30,7 @@ app.get('/api/health', (req: Request, res: Response) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     service: 'streak-sync-backend',
+    database: db.type,
   });
 });
 

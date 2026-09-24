@@ -13,4 +13,12 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: streak-postgres
+          property: connectionString
+
+databases:
+  - name: streak-postgres
+    plan: free
+    databaseName: streak
+    user: streak

@@ -494,8 +494,7 @@ class _HomePageState extends State<HomePage> {
                 strokeWidth: express ? 3.4 : (minimal ? 2 : 2.5),
                 displacement: express ? 58 : (minimal ? 32 : 40),
                 onRefresh: () async {
-                  await Future<void>.delayed(
-                      const Duration(milliseconds: 300));
+                  await context.read<SyncController>().triggerSync();
                   controller.reload();
                 },
                 child: express

@@ -12,6 +12,7 @@ backend/node_modules/
 backend/dist/
 backend/.env
 backend/.env.local
+backend/data/
 
 # Flutter / Client
 client/.dart_tool/

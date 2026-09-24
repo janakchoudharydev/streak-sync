@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import { Pool } from 'pg';
 
 export interface UserRecord {
@@ -20,6 +22,8 @@ export interface SyncEntityRecord {
 }
 
 export interface IDatabase {
+  readonly type: string;
+  init(): Promise<void>;
   findUserByEmail(email: string): Promise<UserRecord | null>;
   findUserById(id: string): Promise<UserRecord | null>;
   createUser(email: string, passwordHash: string): Promise<UserRecord>;
@@ -29,10 +33,15 @@ export interface IDatabase {
   clear(): Promise<void>;
 }
 
-// In-Memory Database Implementation (for local tests / dev mode)
+// In-Memory Database Implementation (for unit tests)
 export class MemoryDatabase implements IDatabase {
+  readonly type = 'memory';
   private users = new Map<string, UserRecord>();
   private entities = new Map<string, SyncEntityRecord>();
+
+  async init(): Promise<void> {
+    // No-op for in-memory database
+  }
 
   private entityKey(userId: string, entityType: string, id: string): string {
     return `${userId}:${entityType}:${id}`;
@@ -94,8 +103,126 @@ export class MemoryDatabase implements IDatabase {
   }
 }
 
-// Production PostgreSQL Database Implementation (for Supabase / Neon / Managed Postgres)
+// Persistent File-Based Database Implementation (persists across local & container restarts)
+export class FileDatabase implements IDatabase {
+  readonly type = 'file';
+  private filePath: string;
+  private users = new Map<string, UserRecord>();
+  private entities = new Map<string, SyncEntityRecord>();
+
+  constructor(filePath?: string) {
+    this.filePath = filePath || path.join(process.cwd(), 'data', 'streak_db.json');
+    this.load();
+  }
+
+  private entityKey(userId: string, entityType: string, id: string): string {
+    return `${userId}:${entityType}:${id}`;
+  }
+
+  private load(): void {
+    try {
+      if (fs.existsSync(this.filePath)) {
+        const raw = fs.readFileSync(this.filePath, 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.users)) {
+          for (const u of parsed.users) {
+            this.users.set(u.id, u);
+          }
+        }
+        if (Array.isArray(parsed.entities)) {
+          for (const e of parsed.entities) {
+            this.entities.set(this.entityKey(e.user_id, e.entity_type, e.id), e);
+          }
+        }
+        console.log(`[FileDatabase] Loaded ${this.users.size} users and ${this.entities.size} entities from ${this.filePath}`);
+      }
+    } catch (err) {
+      console.error('[FileDatabase] Warning reading storage file:', err);
+    }
+  }
+
+  private persist(): void {
+    try {
+      const dir = path.dirname(this.filePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const data = {
+        users: Array.from(this.users.values()),
+        entities: Array.from(this.entities.values()),
+      };
+      fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (err) {
+      console.error('[FileDatabase] Error persisting database file:', err);
+    }
+  }
+
+  async init(): Promise<void> {
+    this.load();
+  }
+
+  async findUserByEmail(email: string): Promise<UserRecord | null> {
+    const normalized = email.toLowerCase().trim();
+    for (const user of this.users.values()) {
+      if (user.email.toLowerCase() === normalized) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  async findUserById(id: string): Promise<UserRecord | null> {
+    return this.users.get(id) || null;
+  }
+
+  async createUser(email: string, passwordHash: string): Promise<UserRecord> {
+    const user: UserRecord = {
+      id: crypto.randomUUID(),
+      email: email.toLowerCase().trim(),
+      password_hash: passwordHash,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    this.users.set(user.id, user);
+    this.persist();
+    return user;
+  }
+
+  async getEntity(userId: string, entityType: string, id: string): Promise<SyncEntityRecord | null> {
+    return this.entities.get(this.entityKey(userId, entityType, id)) || null;
+  }
+
+  async saveEntity(record: SyncEntityRecord): Promise<void> {
+    this.entities.set(this.entityKey(record.user_id, record.entity_type, record.id), { ...record });
+    this.persist();
+  }
+
+  async getEntitiesModifiedSince(userId: string, sinceServerIso: string): Promise<SyncEntityRecord[]> {
+    const sinceDate = sinceServerIso ? new Date(sinceServerIso).getTime() : 0;
+    const results: SyncEntityRecord[] = [];
+
+    for (const record of this.entities.values()) {
+      if (record.user_id === userId) {
+        const recordDate = new Date(record.server_updated_at).getTime();
+        if (recordDate > sinceDate) {
+          results.push({ ...record });
+        }
+      }
+    }
+
+    return results;
+  }
+
+  async clear(): Promise<void> {
+    this.users.clear();
+    this.entities.clear();
+    this.persist();
+  }
+}
+
+// Production PostgreSQL Database Implementation (for Supabase / Neon / Render Postgres)
 export class PostgresDatabase implements IDatabase {
+  readonly type = 'postgres';
   private pool: Pool;
 
   constructor(connectionString: string) {
@@ -106,6 +233,32 @@ export class PostgresDatabase implements IDatabase {
       max: 10,
       idleTimeoutMillis: 30000,
     });
+  }
+
+  async init(): Promise<void> {
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS sync_entities (
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        entity_type VARCHAR(64) NOT NULL,
+        id VARCHAR(128) NOT NULL,
+        data JSONB NOT NULL,
+        client_updated_at TIMESTAMPTZ NOT NULL,
+        server_updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+        PRIMARY KEY (user_id, entity_type, id)
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_sync_entities_lookup ON sync_entities(user_id, server_updated_at);
+    `);
+    console.log('[PostgresDatabase] PostgreSQL tables verified and auto-initialized.');
   }
 
   async findUserByEmail(email: string): Promise<UserRecord | null> {
@@ -219,9 +372,8 @@ export class PostgresDatabase implements IDatabase {
   }
 }
 
-// Database instance selection: Postgres if DATABASE_URL is configured, else Memory
+// Database instance selection: Postgres if DATABASE_URL is configured, else FileDatabase (or Memory for tests)
 const databaseUrl = process.env.DATABASE_URL;
 export const db: IDatabase = databaseUrl
   ? new PostgresDatabase(databaseUrl)
-  : new MemoryDatabase();
-
+  : (process.env.NODE_ENV === 'test' ? new MemoryDatabase() : new FileDatabase());

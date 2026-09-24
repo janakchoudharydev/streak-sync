@@ -146,6 +146,7 @@ void _run() {
         ),
         // Provides reactive cloud sync state to the application UI
         ChangeNotifierProvider(
+          lazy: false,
           create: (context) => SyncController(
             onRemoteDataChanged: () {
               context.read<HabitsController>().reload();
