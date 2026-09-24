@@ -364,6 +364,7 @@ class LocalStore {
     await _todos.clear();
     await _todoTags.clear();
     await _categories.clear();
+    await SyncQueue.clear();
   }
 
   static Future<void> wipeEverything() async {
@@ -374,5 +375,6 @@ class LocalStore {
     await _todoTags.clear();
     await _categories.clear();
     await _settings.clear();
+    await SyncQueue.clear();
   }
 }

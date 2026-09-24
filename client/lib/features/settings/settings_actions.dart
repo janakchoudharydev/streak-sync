@@ -11,6 +11,8 @@ import 'package:streak/app/pin_setup_page.dart';
 import 'package:streak/app/theme/app_tokens.dart';
 import 'package:streak/core/database/local_store.dart';
 import 'package:streak/core/i18n/l10n.dart';
+import 'package:streak/core/sync/auth_service.dart';
+import 'package:streak/core/sync/sync_controller.dart';
 import 'package:streak/core/widgets/sheet_type.dart';
 import 'package:streak/core/utils/app_dirs.dart';
 import 'package:streak/core/utils/app_snackbar.dart';
@@ -302,6 +304,11 @@ class SettingsActions {
 
     await NotificationService().cancelAll();
     await LocalStore.wipeEverything();
+    await AuthService.instance.logout();
+    if (!context.mounted) return;
+    try {
+      await context.read<SyncController>().logout();
+    } catch (_) {}
     if (!context.mounted) return;
     await context.read<HabitsController>().reload();
     if (!context.mounted) return;

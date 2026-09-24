@@ -28,7 +28,9 @@
         android:label="Streak"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
 
         <!-- Keep the notification icon statically referenced so the release
              packaging never strips it. It is otherwise only resolved by name at

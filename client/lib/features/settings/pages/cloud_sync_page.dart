@@ -188,6 +188,47 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
             },
           ),
         ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          height: 44,
+          child: TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.redAccent,
+            ),
+            icon: const Icon(LucideIcons.trash2, size: 16),
+            label: const Text('Log Out & Clear Local Data'),
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Log Out & Clear Device Data?'),
+                  content: const Text(
+                    'This will remove all habits and tasks from this device and return the app to a fresh, clean state. Your data stored on the cloud will remain safe.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: const Text('Clear & Log Out'),
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                final messenger = ScaffoldMessenger.of(context);
+                await sync.logout(clearLocalData: true);
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Device data cleared and logged out')),
+                );
+              }
+            },
+          ),
+        ),
       ],
     );
   }

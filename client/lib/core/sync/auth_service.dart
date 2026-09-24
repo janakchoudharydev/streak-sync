@@ -127,10 +127,12 @@ class AuthService {
     await LocalStore.writeSetting(_tokenKey, '');
     await LocalStore.writeSetting(_emailKey, '');
     await LocalStore.writeSetting(_userIdKey, '');
+    await LocalStore.writeSetting('lastCloudSyncAt', '');
     try {
       await _storage.delete(key: _tokenKey);
       await _storage.delete(key: _emailKey);
       await _storage.delete(key: _userIdKey);
+      await _storage.deleteAll();
     } catch (e) {
       debugPrint('Failed to delete secure storage credentials: $e');
     }

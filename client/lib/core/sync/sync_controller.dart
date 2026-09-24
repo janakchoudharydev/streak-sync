@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:streak/core/database/local_store.dart';
 import 'package:streak/core/sync/auth_service.dart';
 import 'package:streak/core/sync/sync_queue.dart';
 import 'package:streak/core/sync/sync_worker.dart';
@@ -106,10 +107,14 @@ class SyncController extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout({bool clearLocalData = false}) async {
     await AuthService.instance.logout();
     _periodicTimer?.cancel();
     _status = SyncStatus.idle;
+    if (clearLocalData) {
+      await LocalStore.wipeContent();
+      onRemoteDataChanged?.call();
+    }
     notifyListeners();
   }
 

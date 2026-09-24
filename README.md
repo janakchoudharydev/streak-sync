@@ -45,7 +45,7 @@ Built with **Flutter** and backed by a modern **TypeScript / PostgreSQL** sync e
 | Platform | Package Format | Requirements | Direct Download |
 | :--- | :--- | :--- | :--- |
 | 🍏 **macOS** | **`Streak.dmg`** *(Installer with Applications shortcut)* | macOS 12+ (Apple Silicon & Intel) | [**⬇️ Download Streak.dmg** (40 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.dmg) |
-| 🤖 **Android** | **`Streak.apk`** *(Installable package)* | Android 10+ (API 29+) | [**⬇️ Download Streak.apk** (234 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk) |
+| 🤖 **Android** | **`Streak.apk`** *(Installable package)* | Android 10+ (API 29+) | [**⬇️ Download Streak.apk** (87 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk) |
 | 🌐 **Cloud Backend** | **Render Blueprint** | Node.js 18+ / PostgreSQL 16 | [**🚀 Deploy on Render**](render.yaml) |
 
 ## 📸 Screenshots & Aesthetics
