@@ -29,11 +29,15 @@ class AuthService {
 
   String? get userId => _cachedUserId;
 
-  String get serverUrl =>
-      LocalStore.setting(_serverUrlKey, _defaultServerUrl).trim();
+  String get serverUrl {
+    final raw = LocalStore.setting(_serverUrlKey, _defaultServerUrl).trim();
+    // Normalize by stripping any trailing slashes
+    return raw.replaceAll(RegExp(r'/+$'), '');
+  }
 
   Future<void> setServerUrl(String url) async {
-    await LocalStore.writeSetting(_serverUrlKey, url.trim());
+    final clean = url.trim().replaceAll(RegExp(r'/+$'), '');
+    await LocalStore.writeSetting(_serverUrlKey, clean);
   }
 
   Future<void> init() async {
@@ -61,9 +65,19 @@ class AuthService {
       body: json.encode({'email': email, 'password': password}),
     );
 
-    final data = json.decode(response.body);
+    Map<String, dynamic>? data;
+    try {
+      if (response.body.isNotEmpty) {
+        final decoded = json.decode(response.body);
+        if (decoded is Map<String, dynamic>) data = decoded;
+      }
+    } catch (_) {}
+
     if (response.statusCode != 201) {
-      throw Exception(data['error'] ?? 'Registration failed');
+      throw Exception(data?['error'] ?? 'Registration failed (HTTP ${response.statusCode})');
+    }
+    if (data == null) {
+      throw Exception('Invalid server response (HTTP ${response.statusCode})');
     }
 
     await _saveSession(
@@ -81,9 +95,19 @@ class AuthService {
       body: json.encode({'email': email, 'password': password}),
     );
 
-    final data = json.decode(response.body);
+    Map<String, dynamic>? data;
+    try {
+      if (response.body.isNotEmpty) {
+        final decoded = json.decode(response.body);
+        if (decoded is Map<String, dynamic>) data = decoded;
+      }
+    } catch (_) {}
+
     if (response.statusCode != 200) {
-      throw Exception(data['error'] ?? 'Invalid credentials');
+      throw Exception(data?['error'] ?? 'Login failed (HTTP ${response.statusCode})');
+    }
+    if (data == null) {
+      throw Exception('Invalid server response (HTTP ${response.statusCode})');
     }
 
     await _saveSession(
