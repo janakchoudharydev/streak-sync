@@ -1,8 +1,8 @@
-# Streak for Mac & Mobile 🚀
+# Streak for Mac and Mobile Sync 🚀
 
 <div align="center">
 
-<img src="client/assets/banner.png" alt="Streak for Mac & Mobile" width="100%" />
+<img src="client/assets/banner.png" alt="Streak for Mac and Mobile Sync" width="100%" />
 
 <br/>
 <br/>

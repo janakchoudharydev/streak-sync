@@ -72,7 +72,7 @@
             android:targetActivity=".MainActivity"
             android:enabled="false"
             android:exported="true"
-            android:icon="@mipmap/ic_launcher_neutral"
+            android:icon="@mipmap/ic_launcher"
             android:label="Streak">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -85,7 +85,7 @@
             android:targetActivity=".MainActivity"
             android:enabled="false"
             android:exported="true"
-            android:icon="@mipmap/ic_launcher_accent"
+            android:icon="@mipmap/ic_launcher"
             android:label="Streak">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
