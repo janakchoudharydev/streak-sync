@@ -8,6 +8,21 @@ export const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Root Status Route (for browser checks)
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    service: 'Streak Cloud Sync Backend',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      register: 'POST /api/auth/register',
+      login: 'POST /api/auth/login',
+      sync: 'POST /api/sync',
+    },
+  });
+});
+
 // Health Check
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
