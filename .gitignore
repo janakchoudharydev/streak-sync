@@ -6,6 +6,8 @@
 # Private backups
 phone_streak_backup_*.json
 *.ab
+*.dmg
+*.apk
 
 # Backend
 backend/node_modules/
