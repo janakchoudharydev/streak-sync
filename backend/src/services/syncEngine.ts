@@ -111,7 +111,8 @@ export class SyncEngine {
   }
 
   /**
-   * Deep merge completions for habits so progress recorded across multiple offline devices is preserved
+   * Deep merge completions for habits so progress recorded across multiple offline devices is preserved,
+   * while ensuring that explicitly undone/deleted completions are reliably removed.
    */
   private static mergeHabitData(existing: Record<string, any>, incoming: Record<string, any>): Record<string, any> {
     const merged = { ...incoming };
@@ -151,7 +152,27 @@ export class SyncEngine {
       }
     }
 
+    // Process explicit completion deletions/undones
+    const existingRemoved: string[] = Array.isArray(existing.removedCompletions) ? existing.removedCompletions : [];
+    const incomingRemoved: string[] = Array.isArray(incoming.removedCompletions) ? incoming.removedCompletions : [];
+    const allRemoved = new Set([...existingRemoved, ...incomingRemoved]);
+
+    // If an incoming completion was re-added, remove it from allRemoved
+    for (const dayKey of Object.keys(incomingCompletions)) {
+      allRemoved.delete(dayKey);
+    }
+
+    // Delete any undone day keys from the merged completions map
+    for (const dayKey of allRemoved) {
+      delete mergedCompletions[dayKey];
+    }
+
     merged.completions = mergedCompletions;
+    if (allRemoved.size > 0) {
+      merged.removedCompletions = Array.from(allRemoved);
+    } else {
+      delete merged.removedCompletions;
+    }
     return merged;
   }
 }

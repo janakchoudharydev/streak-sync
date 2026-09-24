@@ -248,13 +248,33 @@ class LocalStore {
 
   // Log habit mutation to SyncQueue for cloud synchronization
   static Future<void> writeHabit(Habit habit) async {
+    List<String>? removedCompletions;
+    if (!isSyncAbsorption) {
+      final oldRaw = _habits.get(habit.id);
+      if (oldRaw != null) {
+        try {
+          final oldHabit = Habit.fromJson(oldRaw as String);
+          final removed = oldHabit.completions.keys
+              .where((k) => !habit.completions.containsKey(k))
+              .toList();
+          if (removed.isNotEmpty) {
+            removedCompletions = removed;
+          }
+        } catch (_) {}
+      }
+    }
+
     await _habits.put(habit.id, habit.toJson());
     if (!isSyncAbsorption) {
+      final payload = habit.toMap();
+      if (removedCompletions != null && removedCompletions.isNotEmpty) {
+        payload['removedCompletions'] = removedCompletions;
+      }
       unawaited(SyncQueue.enqueue(
         entityId: habit.id,
         entityType: 'habit',
         action: 'update',
-        payload: habit.toMap(),
+        payload: payload,
       ));
     }
   }

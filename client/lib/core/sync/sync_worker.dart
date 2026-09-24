@@ -6,6 +6,7 @@ import 'package:streak/core/sync/auth_service.dart';
 import 'package:streak/core/sync/sync_queue.dart';
 import 'package:streak/features/focus/data/focus_session.dart';
 import 'package:streak/features/habits/data/category.dart';
+import 'package:streak/features/habits/data/completion.dart';
 import 'package:streak/features/habits/data/habit.dart';
 import 'package:streak/features/habits/data/habit_note.dart';
 import 'package:streak/features/todos/data/todo.dart';
@@ -56,7 +57,7 @@ class SyncWorker {
             },
             body: json.encode(requestPayload),
           )
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 401) {
         debugPrint('Sync failed: Unauthorized token');
@@ -73,14 +74,16 @@ class SyncWorker {
       final changes = (data['changes'] as List?) ?? const [];
       final serverTimestamp = data['serverTimestamp'] as String?;
 
+      final sentMutationIds = batch.map((m) => m.mutationId).toSet();
+
       if (changes.isNotEmpty) {
-        await _applyRemoteChanges(changes);
+        await _applyRemoteChanges(changes, sentMutationIds);
         onDataChanged?.call();
       }
 
       // Dequeue successfully synced local mutations
       if (batch.isNotEmpty) {
-        await SyncQueue.dequeue(batch.map((m) => m.mutationId));
+        await SyncQueue.dequeue(sentMutationIds);
       }
 
       if (serverTimestamp != null && serverTimestamp.isNotEmpty) {
@@ -97,7 +100,7 @@ class SyncWorker {
     }
   }
 
-  static Future<void> _applyRemoteChanges(List changes) async {
+  static Future<void> _applyRemoteChanges(List changes, Set<String> sentMutationIds) async {
     LocalStore.isSyncAbsorption = true;
     try {
       final localHabits = LocalStore.readHabits();
@@ -108,6 +111,11 @@ class SyncWorker {
           final id = change['id'] as String;
           final entityType = change['entityType'] as String;
           final action = change['action'] as String;
+          
+          if (SyncQueue.hasPendingMutationNot(id, sentMutationIds)) {
+            continue;
+          }
+
           final payload = change['payload'] != null
               ? Map<String, dynamic>.from(change['payload'] as Map)
               : null;
@@ -138,14 +146,23 @@ class SyncWorker {
               case 'habit':
                 final incomingHabit = Habit.fromMap(payload);
                 final existingHabit = localHabits[id];
-                final mergedHabit = existingHabit == null
-                    ? incomingHabit
-                    : incomingHabit.copyWith(
-                        completions: FolderSync.mergeCompletions(
-                          existingHabit.completions,
-                          incomingHabit.completions,
-                        ),
+                final removedCompletions = (payload['removedCompletions'] as List?)
+                    ?.map((e) => e.toString())
+                    .toSet() ?? const <String>{};
+
+                final baseCompletions = existingHabit == null
+                    ? incomingHabit.completions
+                    : FolderSync.mergeCompletions(
+                        existingHabit.completions,
+                        incomingHabit.completions,
                       );
+
+                final finalCompletions = Map<String, Completion>.from(baseCompletions)
+                  ..removeWhere((k, _) => removedCompletions.contains(k));
+
+                final mergedHabit = (existingHabit == null ? incomingHabit : incomingHabit).copyWith(
+                  completions: finalCompletions,
+                );
                 await LocalStore.writeHabit(mergedHabit);
                 break;
               case 'category':

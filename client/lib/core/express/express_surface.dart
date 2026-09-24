@@ -38,12 +38,14 @@ class ExpressSquish extends StatefulWidget {
     required this.child,
     this.onTap,
     this.onLongPress,
+    this.onSecondaryTap,
     this.scale = 0.965,
   });
 
   final Widget child;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final VoidCallback? onSecondaryTap;
   final double scale;
 
   @override
@@ -59,7 +61,9 @@ class _ExpressSquishState extends State<ExpressSquish> {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = widget.onTap != null || widget.onLongPress != null;
+    final enabled = widget.onTap != null ||
+        widget.onLongPress != null ||
+        widget.onSecondaryTap != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: enabled ? (_) => _set(true) : null,
@@ -67,6 +71,7 @@ class _ExpressSquishState extends State<ExpressSquish> {
       onTapCancel: enabled ? () => _set(false) : null,
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
+      onSecondaryTap: widget.onSecondaryTap ?? widget.onLongPress,
       child: AnimatedScale(
         scale: _down && enabled ? widget.scale : 1,
         duration: _down ? Express.fast : Express.quick,
@@ -86,6 +91,7 @@ class ExpressCard extends StatelessWidget {
     this.color,
     this.onTap,
     this.onLongPress,
+    this.onSecondaryTap,
     this.clip = false,
   });
 
@@ -95,6 +101,7 @@ class ExpressCard extends StatelessWidget {
   final Color? color;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
+  final VoidCallback? onSecondaryTap;
   final bool clip;
 
   @override
@@ -109,8 +116,13 @@ class ExpressCard extends StatelessWidget {
       padding: padding,
       child: child,
     );
-    if (onTap == null && onLongPress == null) return body;
-    return ExpressSquish(onTap: onTap, onLongPress: onLongPress, child: body);
+    if (onTap == null && onLongPress == null && onSecondaryTap == null) return body;
+    return ExpressSquish(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      onSecondaryTap: onSecondaryTap ?? onLongPress,
+      child: body,
+    );
   }
 }
 

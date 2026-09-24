@@ -164,6 +164,16 @@ class _HomePageState extends State<HomePage> {
             () => run(() => _confirmDelete(controller, habit)),
             true,
           ),
+          (
+            LucideIcons.refreshCw,
+            'Sync & Refresh',
+            () => run(() async {
+              final sync = context.read<SyncController>();
+              await sync.triggerSync();
+              controller.reload();
+            }),
+            false,
+          ),
         ];
 
         return SafeArea(
@@ -343,7 +353,8 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(LucideIcons.chartColumn),
               onPressed: () => AppNavigator.push(const StatisticsPage()),
             ),
-          // Unobtrusive cloud sync status indicator
+          // Cloud sync and refresh actions
+          if (!_reordering) const _RefreshSyncButton(),
           if (!_reordering) const _SyncStatusAction(),
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -400,8 +411,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
+      body: GestureDetector(
+        onSecondaryTapUp: (details) =>
+            _showBackgroundContextMenu(context, details.globalPosition),
+        behavior: HitTestBehavior.translucent,
+        child: Stack(
+          children: [
           Consumer<HabitsController>(
             builder: (context, controller, _) {
               if (controller.isEmpty) return const _EmptyState();
@@ -570,13 +585,70 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 
   void _openDetails(Habit habit) {
     AppNavigator.clearPane();
     if (isWideLayout(context)) AppNavigator.paneItem.value = habit.id;
     AppNavigator.push(HabitDetailsPage(habitId: habit.id), fade: true);
+  }
+
+  void _showBackgroundContextMenu(BuildContext context, Offset position) async {
+    final habits = context.read<HabitsController>();
+    final sync = context.read<SyncController?>();
+    final selected = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        position.dx + 1,
+        position.dy + 1,
+      ),
+      items: [
+        const PopupMenuItem(
+          value: 'refresh',
+          child: Row(
+            children: [
+              Icon(LucideIcons.refreshCw, size: 16),
+              SizedBox(width: 10),
+              Text('Sync & Refresh (⌘R)'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'new_habit',
+          child: Row(
+            children: [
+              Icon(LucideIcons.plus, size: 16),
+              SizedBox(width: 10),
+              Text('New Habit'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'cloud',
+          child: Row(
+            children: [
+              Icon(LucideIcons.cloud, size: 16),
+              SizedBox(width: 10),
+              Text('Cloud Sync Settings'),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (!context.mounted) return;
+    if (selected == 'refresh') {
+      if (sync != null) await sync.triggerSync();
+      habits.reload();
+    } else if (selected == 'new_habit') {
+      AppNavigator.push(const HabitFormPage(), fullscreenDialog: true);
+    } else if (selected == 'cloud') {
+      AppNavigator.push(const CloudSyncPage());
+    }
   }
 
   Future<void> _toggle(Habit habit, DateTime date) async {
@@ -919,6 +991,35 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
+class _RefreshSyncButton extends StatelessWidget {
+  const _RefreshSyncButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final sync = context.watch<SyncController?>();
+    final isSyncing = sync?.isSyncing ?? false;
+
+    return IconButton(
+      tooltip: isSyncing ? 'Syncing...' : 'Sync & Refresh (⌘R)',
+      visualDensity: VisualDensity.compact,
+      icon: isSyncing
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(LucideIcons.refreshCw, size: 18),
+      onPressed: isSyncing
+          ? null
+          : () async {
+              final habits = context.read<HabitsController>();
+              if (sync != null) await sync.triggerSync();
+              habits.reload();
+            },
+    );
+  }
+}
+
 class _SyncStatusAction extends StatelessWidget {
   const _SyncStatusAction();
 
@@ -931,8 +1032,8 @@ class _SyncStatusAction extends StatelessWidget {
       tooltip: sync.isSyncing
           ? 'Syncing habits...'
           : sync.status == SyncStatus.offline
-              ? 'Sync offline'
-              : 'Habits synced',
+              ? 'Sync offline (Right-click for settings)'
+              : 'Habits synced (Click to sync now, right-click for settings)',
       visualDensity: VisualDensity.compact,
       icon: sync.isSyncing
           ? const SizedBox(
@@ -949,7 +1050,11 @@ class _SyncStatusAction extends StatelessWidget {
                   ? context.colors.error
                   : context.colors.onSurface.withValues(alpha: 0.6),
             ),
-      onPressed: () => AppNavigator.push(const CloudSyncPage()),
+      onPressed: () async {
+        final habits = context.read<HabitsController>();
+        await sync.triggerSync();
+        habits.reload();
+      },
     );
   }
 }

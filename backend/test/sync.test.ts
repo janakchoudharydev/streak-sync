@@ -162,6 +162,55 @@ describe('Streak Backend & Sync Engine', () => {
       assert.ok(stored?.data.completions['2026-09-22']);
     });
 
+    it('reliably syncs undone and removed completions', async () => {
+      const user = await AuthService.register('sync_undo@example.com', 'pass123');
+
+      // 1. Initial habit with completion on day 24
+      await SyncEngine.processSync(user.user.id, {
+        mutations: [
+          {
+            id: 'habit-undo',
+            entityType: 'habit',
+            action: 'create',
+            payload: {
+              id: 'habit-undo',
+              name: 'Wake up early',
+              completions: {
+                '2026-09-24': { date: '2026-09-24', count: 1 },
+              },
+            },
+            clientTimestamp: '2026-09-24T10:00:00.000Z',
+          },
+        ],
+      });
+
+      const beforeUndo = await db.getEntity(user.user.id, 'habit', 'habit-undo');
+      assert.ok(beforeUndo?.data.completions['2026-09-24']);
+
+      // 2. User un-does / removes day 24
+      await SyncEngine.processSync(user.user.id, {
+        mutations: [
+          {
+            id: 'habit-undo',
+            entityType: 'habit',
+            action: 'update',
+            payload: {
+              id: 'habit-undo',
+              name: 'Wake up early',
+              completions: {},
+              removedCompletions: ['2026-09-24'],
+            },
+            clientTimestamp: '2026-09-24T10:05:00.000Z',
+          },
+        ],
+      });
+
+      // 3. Stored record must NOT contain 2026-09-24
+      const afterUndo = await db.getEntity(user.user.id, 'habit', 'habit-undo');
+      assert.equal(afterUndo?.data.completions['2026-09-24'], undefined);
+      assert.deepEqual(afterUndo?.data.removedCompletions, ['2026-09-24']);
+    });
+
     it('returns only deltas modified since client last sync', async () => {
       const user = await AuthService.register('sync4@example.com', 'pass123');
 

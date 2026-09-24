@@ -430,6 +430,13 @@ class _SplitScaffoldState extends State<_SplitScaffold> {
 
   bool _onKey(KeyEvent event) {
     if (event is! KeyDownEvent) return false;
+    if (event.logicalKey == LogicalKeyboardKey.keyR &&
+        (HardwareKeyboard.instance.isMetaPressed ||
+            HardwareKeyboard.instance.isControlPressed)) {
+      context.read<SyncController>().triggerSync();
+      context.read<HabitsController>().reload();
+      return true;
+    }
     if (event.logicalKey != LogicalKeyboardKey.escape) return false;
     final root = AppNavigator.key.currentState;
     if (root == null || root.canPop()) return false;

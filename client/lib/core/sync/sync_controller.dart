@@ -6,9 +6,10 @@ import 'package:streak/core/sync/sync_worker.dart';
 
 enum SyncStatus { idle, syncing, offline, error }
 
-class SyncController extends ChangeNotifier {
+class SyncController extends ChangeNotifier with WidgetsBindingObserver {
   SyncController({this.onRemoteDataChanged}) {
     _init();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   final VoidCallback? onRemoteDataChanged;
@@ -46,6 +47,15 @@ class SyncController extends ChangeNotifier {
         const Duration(minutes: 5),
         (_) => triggerSync(),
       );
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (isLoggedIn && !isSyncing) {
+        triggerSync();
+      }
     }
   }
 
@@ -105,6 +115,7 @@ class SyncController extends ChangeNotifier {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _autoSyncDebounce?.cancel();
     if (SyncQueue.onMutationEnqueued == _onMutationEnqueued) {
       SyncQueue.onMutationEnqueued = null;

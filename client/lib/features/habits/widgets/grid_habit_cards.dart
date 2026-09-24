@@ -275,6 +275,7 @@ class GridWeekCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onOpen,
         onLongPress: onLongPress,
+        onSecondaryTap: onLongPress,
         child: _shell(
           context,
           habit,
@@ -437,6 +438,7 @@ class GridYearCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onOpen,
         onLongPress: onLongPress,
+        onSecondaryTap: onLongPress,
         child: _shell(
           context,
           habit,
@@ -509,6 +511,7 @@ class GridMonthCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onOpen,
         onLongPress: onLongPress,
+        onSecondaryTap: onLongPress,
         child: _shell(
           context,
           habit,

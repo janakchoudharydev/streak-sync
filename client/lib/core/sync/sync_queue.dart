@@ -115,4 +115,17 @@ class SyncQueue {
   static Future<void> clear() async {
     await _box.clear();
   }
+
+  /// Check if there is a pending mutation for [entityId] that is NOT in [exclude]
+  static bool hasPendingMutationNot(String entityId, Set<String> exclude) {
+    for (final raw in _box.values) {
+      try {
+        final mutation = SyncMutation.fromJson(raw as String);
+        if (mutation.entityId == entityId && !exclude.contains(mutation.mutationId)) {
+          return true;
+        }
+      } catch (_) {}
+    }
+    return false;
+  }
 }

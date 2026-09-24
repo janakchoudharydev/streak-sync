@@ -70,6 +70,7 @@ class HabitCard extends StatelessWidget {
               : () {
                   onLongPress!();
                 },
+          onSecondaryTap: onLongPress,
           borderRadius: corners,
           child: Stack(
             children: [
