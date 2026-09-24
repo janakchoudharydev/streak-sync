@@ -54,6 +54,20 @@ void main() {
       expect(SyncQueue.peekBatch().first.entityId, 'habit-b');
     });
 
+    test('triggers onMutationEnqueued callback when a mutation is added', () async {
+      var triggered = false;
+      SyncQueue.onMutationEnqueued = () => triggered = true;
+
+      await SyncQueue.enqueue(
+        entityId: 'trigger-test',
+        entityType: 'todo',
+        action: 'create',
+      );
+
+      expect(triggered, isTrue);
+      SyncQueue.onMutationEnqueued = null;
+    });
+
     test('clears entire queue', () async {
       await SyncQueue.enqueue(
         entityId: 'item-1',

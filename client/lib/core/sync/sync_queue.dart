@@ -63,6 +63,8 @@ class SyncQueue {
 
   static bool get isNotEmpty => _box.isNotEmpty;
 
+  static VoidCallback? onMutationEnqueued;
+
   /// Enqueue an entity mutation (create, update, or delete)
   static Future<void> enqueue({
     required String entityId,
@@ -82,6 +84,7 @@ class SyncQueue {
 
     try {
       await _box.put(mutation.mutationId, mutation.toJson());
+      onMutationEnqueued?.call();
     } catch (e) {
       debugPrint('Failed to enqueue sync mutation: $e');
     }

@@ -103,68 +103,72 @@ class SyncWorker {
       final localHabits = LocalStore.readHabits();
 
       for (final rawChange in changes) {
-        final change = Map<String, dynamic>.from(rawChange as Map);
-        final id = change['id'] as String;
-        final entityType = change['entityType'] as String;
-        final action = change['action'] as String;
-        final payload = change['payload'] != null
-            ? Map<String, dynamic>.from(change['payload'] as Map)
-            : null;
+        try {
+          final change = Map<String, dynamic>.from(rawChange as Map);
+          final id = change['id'] as String;
+          final entityType = change['entityType'] as String;
+          final action = change['action'] as String;
+          final payload = change['payload'] != null
+              ? Map<String, dynamic>.from(change['payload'] as Map)
+              : null;
 
-        if (action == 'delete') {
-          switch (entityType) {
-            case 'habit':
-              await LocalStore.removeHabit(id);
-              break;
-            case 'category':
-              await LocalStore.removeCategory(id);
-              break;
-            case 'note':
-              await LocalStore.removeNote(id);
-              break;
-            case 'focus':
-              await LocalStore.removeFocusSessions([id]);
-              break;
-            case 'todo':
-              await LocalStore.removeTodo(id);
-              break;
-            case 'todo_tag':
-              await LocalStore.removeTodoTag(id);
-              break;
+          if (action == 'delete') {
+            switch (entityType) {
+              case 'habit':
+                await LocalStore.removeHabit(id);
+                break;
+              case 'category':
+                await LocalStore.removeCategory(id);
+                break;
+              case 'note':
+                await LocalStore.removeNote(id);
+                break;
+              case 'focus':
+                await LocalStore.removeFocusSessions([id]);
+                break;
+              case 'todo':
+                await LocalStore.removeTodo(id);
+                break;
+              case 'todo_tag':
+                await LocalStore.removeTodoTag(id);
+                break;
+            }
+          } else if (action == 'upsert' && payload != null) {
+            switch (entityType) {
+              case 'habit':
+                final incomingHabit = Habit.fromMap(payload);
+                final existingHabit = localHabits[id];
+                final mergedHabit = existingHabit == null
+                    ? incomingHabit
+                    : incomingHabit.copyWith(
+                        completions: FolderSync.mergeCompletions(
+                          existingHabit.completions,
+                          incomingHabit.completions,
+                        ),
+                      );
+                await LocalStore.writeHabit(mergedHabit);
+                break;
+              case 'category':
+                await LocalStore.writeCategory(Category.fromMap(payload));
+                break;
+              case 'note':
+                await LocalStore.writeNote(HabitNote.fromMap(payload));
+                break;
+              case 'focus':
+                await LocalStore.writeFocusSession(FocusSession.fromMap(payload));
+                break;
+              case 'todo':
+                await LocalStore.writeTodo(Todo.fromMap(payload));
+                break;
+              case 'todo_tag':
+                await LocalStore.writeTodoTag(
+                  TodoTag.fromJson(json.encode(payload)),
+                );
+                break;
+            }
           }
-        } else if (action == 'upsert' && payload != null) {
-          switch (entityType) {
-            case 'habit':
-              final incomingHabit = Habit.fromMap(payload);
-              final existingHabit = localHabits[id];
-              final mergedHabit = existingHabit == null
-                  ? incomingHabit
-                  : incomingHabit.copyWith(
-                      completions: FolderSync.mergeCompletions(
-                        existingHabit.completions,
-                        incomingHabit.completions,
-                      ),
-                    );
-              await LocalStore.writeHabit(mergedHabit);
-              break;
-            case 'category':
-              await LocalStore.writeCategory(Category.fromMap(payload));
-              break;
-            case 'note':
-              await LocalStore.writeNote(HabitNote.fromMap(payload));
-              break;
-            case 'focus':
-              await LocalStore.writeFocusSession(FocusSession.fromMap(payload));
-              break;
-            case 'todo':
-              await LocalStore.writeTodo(Todo.fromMap(payload));
-              break;
-            case 'todo_tag':
-              await LocalStore.writeTodoTag(
-                TodoTag.fromJson(json.encode(payload)),
-              );
-              break;
-          }
+        } catch (e) {
+          debugPrint('Error applying remote entity change: $e');
         }
       }
     } finally {

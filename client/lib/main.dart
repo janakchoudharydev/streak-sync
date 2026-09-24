@@ -149,6 +149,12 @@ void _run() {
           create: (context) => SyncController(
             onRemoteDataChanged: () {
               context.read<HabitsController>().reload();
+              context.read<TodosController>().reload();
+              context.read<NotesController>().reload();
+              context.read<CategoriesController>().reload();
+              context.read<FocusController>().reload();
+              context.read<TodoTagsController>().reload();
+              context.read<IslandController>().reload();
             },
           ),
         ),

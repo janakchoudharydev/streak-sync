@@ -14,6 +14,7 @@ class SyncController extends ChangeNotifier {
   final VoidCallback? onRemoteDataChanged;
   SyncStatus _status = SyncStatus.idle;
   Timer? _periodicTimer;
+  Timer? _autoSyncDebounce;
 
   SyncStatus get status => _status;
   bool get isSyncing => _status == SyncStatus.syncing || SyncWorker.isSyncing;
@@ -22,8 +23,19 @@ class SyncController extends ChangeNotifier {
   String? get lastSyncedAt => SyncWorker.lastSyncedAt;
   int get pendingCount => SyncQueue.count;
 
+  void _onMutationEnqueued() {
+    notifyListeners();
+    _autoSyncDebounce?.cancel();
+    _autoSyncDebounce = Timer(const Duration(milliseconds: 600), () {
+      if (isLoggedIn && !isSyncing) {
+        triggerSync();
+      }
+    });
+  }
+
   Future<void> _init() async {
     await AuthService.instance.init();
+    SyncQueue.onMutationEnqueued = _onMutationEnqueued;
     notifyListeners();
 
     if (isLoggedIn) {
@@ -93,6 +105,10 @@ class SyncController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _autoSyncDebounce?.cancel();
+    if (SyncQueue.onMutationEnqueued == _onMutationEnqueued) {
+      SyncQueue.onMutationEnqueued = null;
+    }
     _periodicTimer?.cancel();
     super.dispose();
   }

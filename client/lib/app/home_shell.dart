@@ -30,6 +30,7 @@ import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/features/statistics/pages/statistics_page.dart';
 import 'package:streak/features/todos/pages/todos_page.dart';
 import 'package:streak/features/todos/state/todos_controller.dart';
+import 'package:streak/core/sync/sync_controller.dart';
 import 'package:streak/services/home_widget_service.dart';
 import 'package:streak/services/widget_action_service.dart';
 
@@ -149,6 +150,7 @@ class _HomeShellState extends State<HomeShell>
       context.read<TodosController>().reload();
       TodayIntro.replay();
       drainFocusActions();
+      context.read<SyncController>().triggerSync();
     }
   }
 

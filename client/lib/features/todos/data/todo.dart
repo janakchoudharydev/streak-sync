@@ -97,7 +97,7 @@ class Todo {
       };
 
   factory Todo.fromMap(Map<String, dynamic> map) => Todo(
-        id: map['id'] as String,
+        id: (map['id'] ?? '') as String,
         text: (map['text'] ?? '') as String,
         done: (map['done'] ?? false) as bool,
         date: (map['date'] ?? '') as String,
@@ -106,17 +106,19 @@ class Todo {
             .toInt()
             .clamp(0, TodoPriority.values.length - 1)],
         photos:
-            (map['photos'] as List?)?.map((p) => p as String).toList() ?? const [],
+            (map['photos'] as List?)?.map((p) => p.toString()).toList() ?? const [],
         tags:
-            (map['tags'] as List?)?.map((t) => t as String).toList() ?? const [],
+            (map['tags'] as List?)?.map((t) => t.toString()).toList() ?? const [],
         project: (map['project'] ?? '') as String,
         steps: (map['steps'] as List?)
                 ?.map((s) => TodoStep.fromMap(Map<String, dynamic>.from(s as Map)))
                 .toList() ??
             const [],
-        createdAt: DateTime.tryParse((map['createdAt'] ?? '') as String) ??
+        createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
             DateTime.now(),
-        doneAt: DateTime.tryParse((map['doneAt'] ?? '') as String),
+        doneAt: map['doneAt'] != null
+            ? DateTime.tryParse(map['doneAt'].toString())
+            : null,
       );
 }
 

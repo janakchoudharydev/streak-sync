@@ -13,7 +13,7 @@ class AuthService {
   static const _emailKey = 'streak_user_email';
   static const _userIdKey = 'streak_user_id';
   static const _serverUrlKey = 'streak_sync_server_url';
-  static const _defaultServerUrl = 'http://localhost:3000';
+  static const _defaultServerUrl = 'https://streak-sync.onrender.com';
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -30,7 +30,10 @@ class AuthService {
   String? get userId => _cachedUserId;
 
   String get serverUrl {
-    final raw = LocalStore.setting(_serverUrlKey, _defaultServerUrl).trim();
+    var raw = LocalStore.setting(_serverUrlKey, _defaultServerUrl).trim();
+    if (raw.isEmpty || raw == 'http://localhost:3000' || raw.contains('your-service.onrender.com')) {
+      raw = _defaultServerUrl;
+    }
     // Normalize by stripping any trailing slashes
     return raw.replaceAll(RegExp(r'/+$'), '');
   }
