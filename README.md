@@ -22,13 +22,31 @@ Built with **Flutter** and backed by a modern **TypeScript / PostgreSQL** sync e
 
 <br/>
 
-<a href="#quick-start-macos">
-  <img src="client/assets/badges/get-it-on-github.png" height="50" alt="Download on GitHub" />
-</a>
+<p>
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.dmg">
+    <img src="https://img.shields.io/badge/Download-Streak.dmg%20(macOS)-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS DMG" height="38" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk">
+    <img src="https://img.shields.io/badge/Download-Streak.apk%20(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK" height="38" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/tag/v2.0.0">
+    <img src="https://img.shields.io/badge/All%20Releases-v2.0.0-FFB703?style=for-the-badge&logo=github&logoColor=black" alt="All GitHub Releases" height="38" />
+  </a>
+</p>
 
 </div>
 
 ---
+
+## 📦 Downloads & Package List
+
+| Platform | Package Format | Requirements | Direct Download |
+| :--- | :--- | :--- | :--- |
+| 🍏 **macOS** | **`Streak.dmg`** *(Installer with Applications shortcut)* | macOS 12+ (Apple Silicon & Intel) | [**⬇️ Download Streak.dmg** (40 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.dmg) |
+| 🤖 **Android** | **`Streak.apk`** *(Installable package)* | Android 10+ (API 29+) | [**⬇️ Download Streak.apk** (234 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk) |
+| 🌐 **Cloud Backend** | **Render Blueprint** | Node.js 18+ / PostgreSQL 16 | [**🚀 Deploy on Render**](render.yaml) |
 
 ## 📸 Screenshots & Aesthetics
 
