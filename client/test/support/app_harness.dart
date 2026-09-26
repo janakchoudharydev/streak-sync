@@ -180,6 +180,7 @@ Future<void> pumpScreen(
   await tester.runAsync(() async {
     await LocalStore.writeSetting('onboardingDone', true);
     await LocalStore.writeSetting('appStyle', minimal ? 1 : 0);
+    await LocalStore.writeSetting('appStyle_default_express_v1', true);
     for (final entry in settings.entries) {
       await LocalStore.writeSetting(entry.key, entry.value);
     }

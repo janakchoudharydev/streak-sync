@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:streak/core/database/local_store.dart';
 import 'package:streak/core/sync/auth_service.dart';
 import 'package:streak/core/sync/sync_queue.dart';
@@ -24,6 +25,64 @@ class SyncWorker {
   static String? get lastSyncedAt =>
       LocalStore.setting<String>(_lastSyncedKey, '');
 
+  static Future<void> enqueueAllLocalData() async {
+    final habits = LocalStore.readHabits().values;
+    final todos = LocalStore.readTodos();
+    final categories = LocalStore.readCategories();
+    final notes = LocalStore.readNotes();
+    final focus = LocalStore.readFocusSessions();
+    final tags = LocalStore.readTodoTags();
+
+    for (final h in habits) {
+      await SyncQueue.enqueue(
+        entityId: h.id,
+        entityType: 'habit',
+        action: 'upsert',
+        payload: h.toMap(),
+      );
+    }
+    for (final t in todos) {
+      await SyncQueue.enqueue(
+        entityId: t.id,
+        entityType: 'todo',
+        action: 'upsert',
+        payload: t.toMap(),
+      );
+    }
+    for (final c in categories) {
+      await SyncQueue.enqueue(
+        entityId: c.id,
+        entityType: 'category',
+        action: 'upsert',
+        payload: c.toMap(),
+      );
+    }
+    for (final n in notes) {
+      await SyncQueue.enqueue(
+        entityId: n.id,
+        entityType: 'note',
+        action: 'upsert',
+        payload: n.toMap(),
+      );
+    }
+    for (final f in focus) {
+      await SyncQueue.enqueue(
+        entityId: f.id,
+        entityType: 'focus',
+        action: 'upsert',
+        payload: f.toMap(),
+      );
+    }
+    for (final tag in tags) {
+      await SyncQueue.enqueue(
+        entityId: tag.id,
+        entityType: 'todo_tag',
+        action: 'upsert',
+        payload: tag.toMap(),
+      );
+    }
+  }
+
   static Future<bool> sync({VoidCallback? onDataChanged}) async {
     if (_isSyncing) return false;
     final auth = AuthService.instance;
@@ -31,8 +90,79 @@ class SyncWorker {
 
     _isSyncing = true;
     try {
+      // Auto-seed: If queue is empty but local habits or todos exist, enqueue them all so they are pushed to cloud
+      if (SyncQueue.isEmpty && (LocalStore.readHabits().isNotEmpty || LocalStore.readTodos().isNotEmpty)) {
+        final alreadySeeded = LocalStore.setting<bool>('cloud_initial_seed_done', false);
+        if (!alreadySeeded) {
+          await enqueueAllLocalData();
+          await LocalStore.writeSetting('cloud_initial_seed_done', true);
+        }
+      }
+
       final batch = SyncQueue.peekBatch(limit: 100);
       final lastSync = LocalStore.setting<String>(_lastSyncedKey, '');
+
+      // Check if Supabase sync can be used directly
+      if (auth.isSupabaseInitialized && (Supabase.instance.client.auth.currentSession != null || (auth.token != null && auth.token!.isNotEmpty))) {
+        final client = Supabase.instance.client;
+        final userId = auth.userId ?? client.auth.currentUser?.id;
+
+        if (userId != null) {
+          // Push mutations to Supabase Postgres
+          if (batch.isNotEmpty) {
+            final records = batch.map((m) => {
+              'user_id': userId,
+              'entity_type': m.entityType,
+              'id': m.entityId,
+              'data': m.payload ?? {},
+              'client_updated_at': m.clientTimestamp,
+              'is_deleted': m.action == 'delete',
+            }).toList();
+            await client.from('sync_entities').upsert(records, onConflict: 'user_id,id');
+          }
+
+          // Pull remote changes from Supabase Postgres
+          final shouldPullAll = LocalStore.readHabits().isEmpty || lastSync.isEmpty;
+          var query = client.from('sync_entities').select().eq('user_id', userId);
+          if (!shouldPullAll) {
+            // Buffer timestamp by 2 minutes to prevent clock drift from dropping concurrent updates
+            final cutoff = DateTime.tryParse(lastSync)?.subtract(const Duration(minutes: 2)).toUtc().toIso8601String() ?? lastSync;
+            query = query.gt('server_updated_at', cutoff);
+          }
+          final res = await query;
+          final changes = (res as List).map((row) {
+            final m = Map<String, dynamic>.from(row as Map);
+            return {
+              'id': m['id'],
+              'entityType': m['entity_type'],
+              'action': m['is_deleted'] == true ? 'delete' : 'upsert',
+              'payload': m['data'] is Map ? Map<String, dynamic>.from(m['data'] as Map) : null,
+              'clientTimestamp': m['client_updated_at'],
+            };
+          }).toList();
+
+          final sentMutationIds = batch.map((m) => m.mutationId).toSet();
+          if (changes.isNotEmpty) {
+            await _applyRemoteChanges(changes, sentMutationIds);
+            onDataChanged?.call();
+          }
+
+          if (batch.isNotEmpty) {
+            await SyncQueue.dequeue(sentMutationIds);
+          }
+
+          String? latestServerTime;
+          for (final row in (res as List)) {
+            final t = row['server_updated_at'] as String?;
+            if (t != null && (latestServerTime == null || t.compareTo(latestServerTime) > 0)) {
+              latestServerTime = t;
+            }
+          }
+          final syncTimestamp = latestServerTime ?? DateTime.now().toUtc().toIso8601String();
+          await LocalStore.writeSetting(_lastSyncedKey, syncTimestamp);
+          return true;
+        }
+      }
 
       final requestPayload = {
         if (lastSync.isNotEmpty) 'since': lastSync,

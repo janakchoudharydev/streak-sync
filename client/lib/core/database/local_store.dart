@@ -47,19 +47,35 @@ class LocalStore {
     }
   }
 
+  static Future<Box<T>> _openBoxWithRetry<T>(String name, {int maxRetries = 6}) async {
+    for (var i = 0; i < maxRetries; i++) {
+      try {
+        return await Hive.openBox<T>(name);
+      } catch (e) {
+        if (e.toString().contains('lock failed') && i < maxRetries - 1) {
+          debugPrint('Lock contention on $name box, retrying in ${(i + 1) * 200}ms...');
+          await Future.delayed(Duration(milliseconds: 200 * (i + 1)));
+          continue;
+        }
+        rethrow;
+      }
+    }
+    return await Hive.openBox<T>(name);
+  }
+
   static Future<void> init() async {
     if (isMobile) {
       await Hive.initFlutter();
     } else {
       Hive.init((await appDataDir()).path);
     }
-    _habits = await Hive.openBox(_habitsBox);
-    _settings = await Hive.openBox(_settingsBox);
-    _categories = await Hive.openBox(_categoriesBox);
-    _notes = await Hive.openBox(_notesBox);
-    _focus = await Hive.openBox(_focusBox);
-    _todos = await Hive.openBox(_todosBox);
-    _todoTags = await Hive.openBox(_todoTagsBox);
+    _habits = await _openBoxWithRetry(_habitsBox);
+    _settings = await _openBoxWithRetry(_settingsBox);
+    _categories = await _openBoxWithRetry(_categoriesBox);
+    _notes = await _openBoxWithRetry(_notesBox);
+    _focus = await _openBoxWithRetry(_focusBox);
+    _todos = await _openBoxWithRetry(_todosBox);
+    _todoTags = await _openBoxWithRetry(_todoTagsBox);
     // Initialize offline sync mutation queue
     await SyncQueue.init();
   }

@@ -18,17 +18,91 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _urlController = TextEditingController(text: AuthService.instance.serverUrl);
+  final _supabaseUrlController = TextEditingController(text: AuthService.instance.supabaseUrl);
+  final _supabaseAnonKeyController = TextEditingController(text: AuthService.instance.supabaseAnonKey);
+  final _googleClientIdController = TextEditingController(text: AuthService.instance.googleClientId);
 
   bool _isRegistering = false;
   bool _loading = false;
   bool _showCustomServer = false;
+  bool _wasLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _wasLoggedIn = context.read<SyncController>().isLoggedIn;
+  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _urlController.dispose();
+    _supabaseUrlController.dispose();
+    _supabaseAnonKeyController.dispose();
+    _googleClientIdController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveConfig() async {
+    final server = _urlController.text.trim();
+    if (server.isNotEmpty) {
+      await AuthService.instance.setServerUrl(server);
+    }
+    final clientId = _googleClientIdController.text.trim();
+    await AuthService.instance.setGoogleClientId(clientId);
+    final supUrl = _supabaseUrlController.text.trim();
+    final supKey = _supabaseAnonKeyController.text.trim();
+    if (supUrl.isNotEmpty && supKey.isNotEmpty) {
+      await AuthService.instance.setSupabaseConfig(
+        url: supUrl,
+        anonKey: supKey,
+      );
+    }
+  }
+
+  Future<void> _handleGoogleSignIn(SyncController sync) async {
+    final messenger = ScaffoldMessenger.of(context);
+    await _saveConfig();
+    if (!mounted) return;
+
+    if (AuthService.instance.supabaseUrl.isEmpty || AuthService.instance.supabaseAnonKey.isEmpty) {
+      setState(() => _showCustomServer = true);
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Please enter your Supabase URL & Anon Key below first.'),
+          duration: Duration(seconds: 4),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+    try {
+      await sync.signInWithGoogle();
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Opening Google Sign-In in browser...')),
+      );
+    } catch (e) {
+      final msg = e.toString().replaceAll('Exception: ', '');
+      if (!msg.toLowerCase().contains('cancelled')) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            action: msg.contains('configure')
+                ? SnackBarAction(
+                    label: 'Configure',
+                    onPressed: () {
+                      setState(() => _showCustomServer = true);
+                    },
+                  )
+                : null,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   Future<void> _submitAuth(SyncController sync) async {
@@ -44,7 +118,7 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
     }
 
     if (_showCustomServer) {
-      await AuthService.instance.setServerUrl(_urlController.text.trim());
+      await _saveConfig();
     }
 
     setState(() => _loading = true);
@@ -73,6 +147,18 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
   Widget build(BuildContext context) {
     final sync = context.watch<SyncController>();
 
+    if (!_wasLoggedIn && sync.isLoggedIn && !_loading) {
+      _wasLoggedIn = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && Navigator.canPop(context)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Signed in with Google! Synced smoothly.')),
+          );
+          Navigator.of(context).pop();
+        }
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Cloud Sync')),
       body: ListView(
@@ -93,16 +179,59 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
         ? DateTime.tryParse(sync.lastSyncedAt!)?.toLocal().toString().split('.').first ?? sync.lastSyncedAt!
         : 'Never';
 
+    final displayName = sync.displayName ?? sync.userEmail ?? 'Streak User';
+    final photoUrl = sync.photoUrl;
+
     return Column(
       children: [
         Card(
           child: Column(
             children: [
-              SettingRow(
-                icon: LucideIcons.user,
-                title: 'Account',
-                subtitle: sync.userEmail ?? 'Unknown user',
-                trailing: const Icon(LucideIcons.check, color: Colors.green, size: 18),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    if (photoUrl != null && photoUrl.isNotEmpty)
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundImage: NetworkImage(photoUrl),
+                        backgroundColor: context.colors.surfaceContainerHighest,
+                      )
+                    else
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor: context.colors.primaryContainer,
+                        child: Text(
+                          displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                          style: TextStyle(
+                            color: context.colors.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          if (sync.userEmail != null && sync.userEmail != displayName)
+                            Text(
+                              sync.userEmail!,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: context.colors.onSurfaceVariant,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const Icon(LucideIcons.badgeCheck, color: Colors.green, size: 20),
+                  ],
+                ),
               ),
               settingsDivider(context),
               SettingRow(
@@ -177,34 +306,19 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
           width: double.infinity,
           height: 48,
           child: OutlinedButton.icon(
-            icon: const Icon(LucideIcons.logOut, size: 18),
-            label: const Text('Log Out'),
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              await sync.logout();
-              messenger.showSnackBar(
-                const SnackBar(content: Text('Logged out of cloud sync')),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: double.infinity,
-          height: 44,
-          child: TextButton.icon(
-            style: TextButton.styleFrom(
+            style: OutlinedButton.styleFrom(
               foregroundColor: Colors.redAccent,
+              side: const BorderSide(color: Colors.redAccent),
             ),
-            icon: const Icon(LucideIcons.trash2, size: 16),
-            label: const Text('Log Out & Clear Local Data'),
+            icon: const Icon(LucideIcons.logOut, size: 18),
+            label: const Text('Log Out & Clear Device Data'),
             onPressed: () async {
               final confirmed = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Log Out & Clear Device Data?'),
+                  title: const Text('Log Out & Start Fresh?'),
                   content: const Text(
-                    'This will remove all habits and tasks from this device and return the app to a fresh, clean state. Your data stored on the cloud will remain safe.',
+                    'Logging out will clear this device so the app starts fresh. All your habits and tasks remain safe in your Google cloud account and will restore whenever you sign in.',
                   ),
                   actions: [
                     TextButton(
@@ -214,7 +328,7 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                     FilledButton(
                       style: FilledButton.styleFrom(backgroundColor: Colors.redAccent),
                       onPressed: () => Navigator.of(ctx).pop(true),
-                      child: const Text('Clear & Log Out'),
+                      child: const Text('Log Out & Clear'),
                     ),
                   ],
                 ),
@@ -222,9 +336,13 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
               if (confirmed == true && context.mounted) {
                 final messenger = ScaffoldMessenger.of(context);
                 await sync.logout(clearLocalData: true);
+                if (!context.mounted) return;
                 messenger.showSnackBar(
-                  const SnackBar(content: Text('Device data cleared and logged out')),
+                  const SnackBar(content: Text('Logged out and device reset to fresh state')),
                 );
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
               }
             },
           ),
@@ -248,9 +366,9 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _isRegistering ? 'Create Account' : 'Sign In to Sync',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      const Text(
+                        'Cloud Sync & Backup',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       Text(
                         'Keep your habits synced across Android, iOS, Mac, and Windows.',
@@ -264,7 +382,77 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
+            // Standard "Sign in with Google" button
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colors.surfaceContainerHighest,
+                foregroundColor: context.colors.onSurface,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: context.colors.outlineVariant),
+                ),
+              ),
+              onPressed: _loading ? null : () => _handleGoogleSignIn(sync),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: const Text(
+                      'G',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Sign in with Google',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 6),
+            Center(
+              child: Text(
+                'Powered by Supabase Cloud Sync',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: context.colors.onSurfaceVariant.withValues(alpha: 0.7),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Expanded(child: Divider(color: context.colors.outlineVariant)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'OR WITH EMAIL',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(color: context.colors.outlineVariant)),
+              ],
+            ),
+            const SizedBox(height: 18),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -293,7 +481,53 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                   labelText: 'Custom Server URL',
                   prefixIcon: Icon(LucideIcons.server, size: 18),
                   border: OutlineInputBorder(),
-                  helperText: 'e.g., https://your-streak-sync.vercel.app',
+                  helperText: 'e.g., https://streak-sync.onrender.com',
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _supabaseUrlController,
+                decoration: const InputDecoration(
+                  labelText: 'Supabase URL',
+                  prefixIcon: Icon(LucideIcons.database, size: 18),
+                  border: OutlineInputBorder(),
+                  helperText: 'e.g., https://xyzcompany.supabase.co',
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _supabaseAnonKeyController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Supabase Anon Key',
+                  prefixIcon: Icon(LucideIcons.key, size: 18),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _googleClientIdController,
+                decoration: const InputDecoration(
+                  labelText: 'Google Client ID (macOS / Web)',
+                  prefixIcon: Icon(LucideIcons.fingerprint, size: 18),
+                  border: OutlineInputBorder(),
+                  helperText: 'From Google Cloud Console OAuth credentials',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.tonalIcon(
+                  icon: const Icon(LucideIcons.save, size: 16),
+                  label: const Text('Save Configuration'),
+                  onPressed: () async {
+                    await _saveConfig();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Configuration saved!')),
+                      );
+                    }
+                  },
                 ),
               ),
             ],
@@ -306,7 +540,7 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                   size: 14,
                 ),
                 label: Text(
-                  _showCustomServer ? 'Hide Server URL' : 'Configure Server URL',
+                  _showCustomServer ? 'Hide Server / Supabase Config' : 'Configure Server / Supabase',
                   style: const TextStyle(fontSize: 12),
                 ),
                 onPressed: () {
@@ -323,7 +557,7 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(_isRegistering ? 'Register & Enable Sync' : 'Sign In'),
+                  : Text(_isRegistering ? 'Register & Enable Sync' : 'Sign In with Email'),
             ),
             const SizedBox(height: 12),
             TextButton(
@@ -344,3 +578,4 @@ class _CloudSyncPageState extends State<CloudSyncPage> {
     );
   }
 }
+

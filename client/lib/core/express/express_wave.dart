@@ -39,7 +39,9 @@ class _ExpressWaveBarState extends State<ExpressWaveBar>
   @override
   void initState() {
     super.initState();
-    if (widget.animate) _phase.repeat();
+    if (widget.animate && WidgetsBinding.instance is WidgetsFlutterBinding) {
+      _phase.repeat();
+    }
   }
 
   @override

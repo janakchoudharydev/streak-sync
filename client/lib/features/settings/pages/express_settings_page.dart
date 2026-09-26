@@ -23,6 +23,7 @@ import 'package:streak/features/settings/pages/app_style_page.dart';
 import 'package:streak/features/settings/pages/archived_habits_page.dart';
 import 'package:streak/features/settings/pages/cloud_sync_page.dart';
 import 'package:streak/features/settings/pages/quotes_page.dart';
+import 'package:streak/core/sync/auth_service.dart';
 import 'package:streak/features/settings/settings_actions.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/features/settings/widgets/minimal_settings_widgets.dart';
@@ -263,11 +264,17 @@ class _ProfileHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
-    final name = settings.profileName.isEmpty
-        ? context.l10n.default_user
-        : settings.profileName;
+    final auth = AuthService.instance;
+    final name = (auth.isLoggedIn && (auth.displayName?.isNotEmpty ?? false))
+        ? auth.displayName!
+        : (settings.profileName.isNotEmpty
+            ? settings.profileName
+            : 'Janak Choudhary');
     final filePath = settings.profilePhoto.split('?').first;
-    final hasPhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final hasFilePhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final ImageProvider avatarProvider = hasFilePhoto
+        ? FileImage(File(filePath))
+        : const AssetImage('assets/profile_default.png');
 
     return ExpressCard(
       padding: const EdgeInsets.all(16),
@@ -285,9 +292,7 @@ class _ProfileHero extends StatelessWidget {
                   decoration: ShapeDecoration(
                     shape: const ExpressBorder(shape: ExpressShape.cookie),
                     image: DecorationImage(
-                      image: hasPhoto
-                          ? FileImage(File(filePath)) as ImageProvider
-                          : const AssetImage('assets/profile_default.jpg'),
+                      image: avatarProvider,
                       fit: BoxFit.cover,
                     ),
                   ),

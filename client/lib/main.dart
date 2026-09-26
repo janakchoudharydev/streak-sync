@@ -10,7 +10,9 @@ import 'package:streak/app/streak_app.dart';
 import 'package:streak/core/database/local_store.dart';
 import 'package:streak/core/utils/app_dirs.dart';
 import 'package:streak/core/extensions/date_extensions.dart';
+import 'package:streak/core/backup/backup_task_manager.dart';
 import 'package:streak/core/routing/app_navigator.dart';
+import 'package:streak/core/sync/powersync_service.dart';
 import 'package:streak/core/sync/sync_controller.dart';
 import 'package:streak/features/focus/pages/focus_page.dart';
 import 'package:streak/features/focus/state/focus_actions.dart';
@@ -38,6 +40,10 @@ Future<void> main() async {
   try {
     await _startup();
   } catch (e, s) {
+    if (e.toString().contains('lock failed') && !isMobile) {
+      debugPrint('Secondary instance detected with lock held. Exiting cleanly: $e');
+      exit(0);
+    }
     debugPrint('Streak could not start: $e');
     debugPrintStack(stackTrace: s);
     runApp(StartupFailure(error: '$e', logPath: _writeStartupLog(e, s)));
@@ -64,6 +70,8 @@ Future<void> _startup() async {
 
   await initializeDateFormatting();
   await LocalStore.init();
+  unawaited(PowerSyncService.instance.init());
+  unawaited(BackupTaskManager.init());
   AppClock.cutoffHour = LocalStore.setting('dayCutoff', 0);
   await WidgetActionService.drain(
     LocalStore.readHabits(),

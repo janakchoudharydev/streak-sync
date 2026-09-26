@@ -73,6 +73,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>streak</string>
+				<string>io.supabase.streak</string>
 			</array>
 		</dict>
 	</array>

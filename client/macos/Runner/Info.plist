@@ -28,5 +28,19 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>io.supabase.streak</string>
+				<string>streak</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
 </dict>
 </plist>

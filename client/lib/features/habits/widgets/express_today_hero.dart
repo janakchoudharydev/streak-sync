@@ -169,7 +169,15 @@ class _PulseLabelState extends State<_PulseLabel>
   late final AnimationController _pulse = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1200),
-  )..repeat(reverse: true);
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    if (WidgetsBinding.instance is WidgetsFlutterBinding) {
+      _pulse.repeat(reverse: true);
+    }
+  }
 
   @override
   void dispose() {

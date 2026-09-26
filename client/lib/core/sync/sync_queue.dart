@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:streak/core/sync/powersync_service.dart';
 import 'package:uuid/uuid.dart';
 
 class SyncMutation {
@@ -78,12 +80,20 @@ class SyncQueue {
       entityId: entityId,
       entityType: entityType,
       action: action,
-      clientTimestamp: (timestamp ?? DateTime.now().toUtc()).toIso8601String(),
+      clientTimestamp: (timestamp?.toUtc() ?? DateTime.now().toUtc()).toIso8601String(),
       payload: payload,
     );
 
     try {
       await _box.put(mutation.mutationId, mutation.toJson());
+      // One-way interceptor: Local DB Write -> PowerSync Queue
+      unawaited(PowerSyncService.instance.recordMutation(
+        entityId: entityId,
+        entityType: entityType,
+        action: action,
+        clientTimestamp: mutation.clientTimestamp,
+        payload: payload,
+      ));
       onMutationEnqueued?.call();
     } catch (e) {
       debugPrint('Failed to enqueue sync mutation: $e');

@@ -24,6 +24,7 @@ import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/features/settings/widgets/settings_rows.dart';
 import 'package:streak/features/settings/widgets/minimal_settings_widgets.dart';
 import 'package:streak/features/settings/widgets/settings_sheets.dart';
+import 'package:streak/core/sync/auth_service.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -51,11 +52,20 @@ class ClassicSettingsPage extends StatelessWidget {
         padding: context.pagePadding(16, 16, 16, 104),
         children: [
           Entrance(
-            child: _ProfileHeader(
-              name: settings.profileName.isEmpty
-                  ? context.l10n.default_user
-                  : settings.profileName,
-              photoPath: settings.profilePhoto,
+            child: Builder(
+              builder: (ctx) {
+                final auth = AuthService.instance;
+                final dynamicName = (auth.isLoggedIn && (auth.displayName?.isNotEmpty ?? false))
+                    ? auth.displayName!
+                    : (settings.profileName.isNotEmpty
+                        ? settings.profileName
+                        : 'Janak Choudhary');
+                final dynamicPhoto = settings.profilePhoto;
+                return _ProfileHeader(
+                  name: dynamicName,
+                  photoPath: dynamicPhoto,
+                );
+              },
             ),
           ),
           const SizedBox(height: 24),
@@ -803,7 +813,10 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = context.colors;
     final filePath = photoPath.split('?').first;
-    final hasPhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final hasFilePhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final ImageProvider avatarProvider = hasFilePhoto
+        ? FileImage(File(filePath))
+        : const AssetImage('assets/profile_default.png');
 
     return Column(
       children: [
@@ -821,9 +834,7 @@ class _ProfileHeader extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: scheme.surfaceContainerHighest,
                     image: DecorationImage(
-                      image: hasPhoto
-                          ? FileImage(File(filePath)) as ImageProvider
-                          : const AssetImage('assets/profile_default.jpg'),
+                      image: avatarProvider,
                       fit: BoxFit.cover,
                     ),
                   ),

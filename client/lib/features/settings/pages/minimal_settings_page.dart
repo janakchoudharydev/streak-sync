@@ -19,6 +19,7 @@ import 'package:streak/features/settings/settings_actions.dart';
 import 'package:streak/features/settings/state/settings_controller.dart';
 import 'package:streak/features/settings/widgets/minimal_settings_widgets.dart';
 import 'package:streak/features/settings/widgets/settings_sheets.dart';
+import 'package:streak/core/sync/auth_service.dart';
 
 class MinimalSettingsPage extends StatelessWidget {
   const MinimalSettingsPage({super.key});
@@ -32,11 +33,20 @@ class MinimalSettingsPage extends StatelessWidget {
       body: ListView(
         padding: context.pagePadding(22, 0, 22, 40),
         children: [
-          _ProfileRow(
-            name: settings.profileName.isEmpty
-                ? context.l10n.default_user
-                : settings.profileName,
-            photoPath: settings.profilePhoto,
+          Builder(
+            builder: (ctx) {
+              final auth = AuthService.instance;
+              final dynamicName = (auth.isLoggedIn && (auth.displayName?.isNotEmpty ?? false))
+                  ? auth.displayName!
+                  : (settings.profileName.isNotEmpty
+                      ? settings.profileName
+                      : 'Janak Choudhary');
+              final dynamicPhoto = settings.profilePhoto;
+              return _ProfileRow(
+                name: dynamicName,
+                photoPath: dynamicPhoto,
+              );
+            },
           ),
           const SizedBox(height: 28),
           SoftCard(
@@ -175,7 +185,10 @@ class _ProfileRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filePath = photoPath.split('?').first;
-    final hasPhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final hasFilePhoto = filePath.isNotEmpty && File(filePath).existsSync();
+    final ImageProvider avatarProvider = hasFilePhoto
+        ? FileImage(File(filePath))
+        : const AssetImage('assets/profile_default.png');
 
     return Row(
       children: [
@@ -191,9 +204,7 @@ class _ProfileRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: context.colors.surfaceContainerHighest,
                 image: DecorationImage(
-                  image: hasPhoto
-                      ? FileImage(File(filePath)) as ImageProvider
-                      : const AssetImage('assets/profile_default.jpg'),
+                  image: avatarProvider,
                   fit: BoxFit.cover,
                 ),
               ),

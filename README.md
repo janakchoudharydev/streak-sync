@@ -23,16 +23,16 @@ Built with **Flutter** and backed by a modern **TypeScript / PostgreSQL** sync e
 <br/>
 
 <p>
-  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.dmg">
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.1.0/Streak.dmg">
     <img src="https://img.shields.io/badge/Download-Streak.dmg%20(macOS)-000000?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS DMG" height="38" />
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk">
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/download/v2.1.0/Streak.apk">
     <img src="https://img.shields.io/badge/Download-Streak.apk%20(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK" height="38" />
   </a>
   &nbsp;&nbsp;
-  <a href="https://github.com/janakchoudharydev/streakformac/releases/tag/v2.0.0">
-    <img src="https://img.shields.io/badge/All%20Releases-v2.0.0-FFB703?style=for-the-badge&logo=github&logoColor=black" alt="All GitHub Releases" height="38" />
+  <a href="https://github.com/janakchoudharydev/streakformac/releases/tag/v2.1.0">
+    <img src="https://img.shields.io/badge/All%20Releases-v2.1.0-FFB703?style=for-the-badge&logo=github&logoColor=black" alt="All GitHub Releases" height="38" />
   </a>
 </p>
 
@@ -44,8 +44,8 @@ Built with **Flutter** and backed by a modern **TypeScript / PostgreSQL** sync e
 
 | Platform | Package Format | Requirements | Direct Download |
 | :--- | :--- | :--- | :--- |
-| 🍏 **macOS** | **`Streak.dmg`** *(Installer with Applications shortcut)* | macOS 12+ (Apple Silicon & Intel) | [**⬇️ Download Streak.dmg** (40 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.dmg) |
-| 🤖 **Android** | **`Streak.apk`** *(Installable package)* | Android 10+ (API 29+) | [**⬇️ Download Streak.apk** (87 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.0.0/Streak.apk) |
+| 🍏 **macOS** | **`Streak.dmg`** *(Installer with Applications shortcut)* | macOS 12+ (Apple Silicon & Intel) | [**⬇️ Download Streak.dmg** (43 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.1.0/Streak.dmg) |
+| 🤖 **Android** | **`Streak.apk`** *(Installable package)* | Android 10+ (API 29+) | [**⬇️ Download Streak.apk** (92 MB)](https://github.com/janakchoudharydev/streakformac/releases/download/v2.1.0/Streak.apk) |
 | 🌐 **Cloud Backend** | **Render Blueprint** | Node.js 18+ / PostgreSQL 16 | [**🚀 Deploy on Render**](render.yaml) |
 
 ## 📸 Screenshots & Aesthetics
@@ -244,6 +244,225 @@ Both backend and client include comprehensive test coverage:
 - **End-to-End Control**: Your habits live primarily on your device in encrypted local storage.
 - **Token-Based Authentication**: Synchronization requires an authenticated, salted bcrypt password hash and JWT bearer tokens.
 - **Zero Third-Party Trackers**: No Google Analytics, no Facebook SDKs, no ad networks, no data broker sales.
+
+---
+
+## 🖥️ Server Setup & Deployment Guide (Self-Hosting & Cloud)
+
+Streak includes a high-performance, lightweight synchronization server written in **TypeScript (Node.js)** with **PostgreSQL** storage and **Last-Write-Wins (LWW)** conflict resolution. You can deploy it for **$0/month** on cloud platforms or self-host it on your own hardware / VPS.
+
+```
+┌────────────────────────────────────────────────────────┐
+│                   Streak Client                        │
+│             (macOS Desktop / Android)                  │
+└──────────────────────────┬─────────────────────────────┘
+                           │ HTTPS / TLS (Bearer JWT)
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│            Streak Sync Backend (Node.js / Express)      │
+│  • JWT Auth & Bcrypt    • LWW Conflict Resolution     │
+│  • Batched Sync Engine  • Habit Deep-Merging Engine    │
+└──────────────────────────┬─────────────────────────────┘
+                           │ Connection Pool
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│             PostgreSQL Database 15+                    │
+│   (Managed Supabase / Local Postgres / Docker / Neon)  │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Method 1: Instant Zero-Cost Deploy on Render (Recommended)
+
+This repository includes a turnkey [render.yaml](render.yaml) blueprint that provisions both the **Node.js Web Service** and a **Managed PostgreSQL Database** on Render's free tier.
+
+1. Fork or push this repository to your GitHub account: `https://github.com/janakchoudharydev/streakformac`.
+2. Sign in to [Render.com](https://render.com).
+3. In the Render Dashboard, click **New +** → **Blueprint**.
+4. Select your connected `streakformac` repository and branch `main`.
+5. Render will automatically parse [render.yaml](render.yaml) and configure:
+   - **Web Service:** `streak-sync-backend` (Node.js, build: `npm install --include=dev && npm run build`, start: `npm start`)
+   - **Managed Database:** `streak-postgres` (PostgreSQL 16)
+   - **Environment Variables:** Automatic generation of `JWT_SECRET` and secure internal linking of `DATABASE_URL`.
+6. Click **Apply**. Within 2-3 minutes, Render will output your public server URL:
+   ```
+   https://streak-sync-backend-xxxx.onrender.com
+   ```
+7. Verify health by opening `https://your-url.onrender.com/api/health` in your browser. It should return:
+   ```json
+   { "status": "ok", "timestamp": "...", "db": "postgres" }
+   ```
+
+---
+
+### Method 2: Self-Hosting with Docker & Docker Compose
+
+For homeservers, NAS (Synology/TrueNAS), or private VPS instances (DigitalOcean, Hetzner, Linode):
+
+#### 1. Create `docker-compose.yml` in your backend or root directory:
+```yaml
+version: '3.8'
+
+services:
+  streak-db:
+    image: postgres:16-alpine
+    container_name: streak-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: streak
+      POSTGRES_PASSWORD: your_strong_db_password
+      POSTGRES_DB: streak
+    volumes:
+      - streak_pg_data:/var/lib/postgresql/data
+      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  streak-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: streak-api
+    restart: unless-stopped
+    depends_on:
+      streak-db:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      JWT_SECRET: your_random_32_char_jwt_secret_key_here
+      DATABASE_URL: postgresql://streak:your_strong_db_password@streak-db:5432/streak
+    ports:
+      - "3000:3000"
+
+volumes:
+  streak_pg_data:
+```
+
+#### 2. Start the stack:
+```bash
+docker compose up -d
+```
+
+Your server will be running on `http://localhost:3000` with automated database schema provisioning.
+
+---
+
+### Method 3: Manual Bare-Metal / VPS Setup (Linux / macOS)
+
+#### Prerequisites
+- **Node.js**: `>= 20.0.0`
+- **npm**: `>= 10.0.0`
+- **PostgreSQL**: `>= 15.0`
+- **Git**
+
+#### 1. Clone & Install Dependencies
+```bash
+git clone https://github.com/janakchoudharydev/streakformac.git
+cd streakformac/backend
+npm install
+```
+
+#### 2. Configure PostgreSQL Database
+Log in to your PostgreSQL instance and create the database:
+```sql
+CREATE DATABASE streak;
+CREATE USER streak WITH ENCRYPTED PASSWORD 'supersecretpassword';
+GRANT ALL PRIVILEGES ON DATABASE streak TO streak;
+```
+
+Run the schema migration file to create tables and indexes:
+```bash
+psql -U streak -d streak -f src/db/schema.sql
+```
+
+#### 3. Configure Environment Variables
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+Edit `.env`:
+```env
+PORT=3000
+NODE_ENV=production
+JWT_SECRET=generate_a_random_32_character_secret_string
+DATABASE_URL=postgresql://streak:supersecretpassword@localhost:5432/streak
+```
+
+#### 4. Build & Run
+```bash
+npm run build    # Compiles TypeScript to dist/
+npm test         # Validates sync and LWW test suite
+npm start        # Launches production server on port 3000
+```
+
+#### 5. Configure systemd (Optional for background VPS service)
+Create `/etc/systemd/system/streak.service`:
+```ini
+[Unit]
+Description=Streak Sync API Server
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/streakformac/backend
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=10
+EnvironmentFile=/var/www/streakformac/backend/.env
+
+[Install]
+WantedBy=multi-user.target
+```
+Enable and start the service:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable streak
+sudo systemctl start streak
+```
+
+#### 6. Configure HTTPS Reverse Proxy (Caddy or Nginx)
+Using **Caddy** (automatic Let's Encrypt SSL):
+```caddy
+sync.yourdomain.com {
+    reverse_proxy localhost:3000
+}
+```
+
+---
+
+### Method 4: Supabase Cloud Database + Vercel Deployment
+
+If you want a 100% serverless, zero-maintenance deployment:
+1. Create a free project at [Supabase.com](https://supabase.com).
+2. In Supabase Dashboard, open **SQL Editor** and run the contents of [`backend/src/db/schema.sql`](backend/src/db/schema.sql).
+3. Retrieve your connection string from **Project Settings** → **Database** (`postgresql://postgres:[PASSWORD]@...`).
+4. Import `janakchoudharydev/streakformac` into [Vercel](https://vercel.com) with Root Directory set to `backend`.
+5. Set Environment Variables:
+   - `JWT_SECRET`: your secret string
+   - `DATABASE_URL`: your Supabase connection string
+6. Deploy!
+
+---
+
+### 📱 Connecting Streak Clients (macOS & Mobile)
+
+Once your server is online:
+
+1. Launch **Streak** on macOS or Android.
+2. Navigate to **Settings** (gear icon) → **Cloud Sync & Backup**.
+3. Under **Server Configuration**:
+   - If using custom backend: Enter your server endpoint (e.g. `https://sync.yourdomain.com` or `https://your-app.onrender.com`).
+   - If using Google Sign-In + Supabase: Tap **Sign in with Google** for automated zero-config pairing!
+4. Register or log in with your email and password.
+5. All habits, notes, todos, categories, and focus sessions will immediately synchronize across all your connected devices in real time!
 
 ---
 

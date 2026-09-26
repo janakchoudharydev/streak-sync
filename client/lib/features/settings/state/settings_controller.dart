@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:streak/app/app_lock_pin.dart';
 import 'package:streak/features/habits/data/habit.dart';
@@ -7,6 +8,7 @@ import 'package:streak/core/extensions/date_extensions.dart';
 import 'package:streak/core/utils/cover_storage.dart';
 import 'package:streak/core/utils/money_format.dart';
 import 'package:streak/core/widgets/celebration_overlay.dart';
+import 'package:streak/core/backup/backup_task_manager.dart';
 import 'package:streak/features/focus/state/focus_audio.dart';
 import 'package:streak/services/app_icon_service.dart';
 import 'package:streak/services/backup_service.dart';
@@ -51,12 +53,18 @@ class SettingsController extends ChangeNotifier {
     _appBackground = LocalStore.setting('appBackground', 2);
     _bgImage = LocalStore.setting('bgImage', '');
     _checkStyle = LocalStore.setting('checkStyle', 0);
-    _profileName = LocalStore.setting('profileName', '');
+    _profileName = LocalStore.setting('profileName', 'Janak Choudhary');
+    if (_profileName.isEmpty || _profileName == 'Janak' || _profileName == 'User') {
+      _profileName = 'Janak Choudhary';
+    }
     _currency = LocalStore.setting('currency', defaultCurrencySymbol());
     _vacationAll = LocalStore.setting('vacationAll', false);
     _vacationAllIds =
         List<String>.from(LocalStore.setting('vacationAllIds', const <String>[]));
     _profilePhoto = LocalStore.setting('profilePhoto', '');
+    if (_profilePhoto.contains('profile_default.jpg')) {
+      _profilePhoto = '';
+    }
     _appIcon = LocalStore.setting('appIcon', 0);
     _accentColor = LocalStore.setting('accentColor', AppPalette.brand.toARGB32());
     _heatmapMode = LocalStore.setting('heatmapMode', 0);
@@ -103,10 +111,15 @@ class SettingsController extends ChangeNotifier {
         List<int>.from(LocalStore.setting('hiddenScenes', const <int>[]));
     _hiddenTracks =
         List<String>.from(LocalStore.setting('hiddenTracks', const <String>[]));
-    _appStyle = LocalStore.setting(
-      'appStyle',
-      LocalStore.setting('homeLayout', 0),
-    );
+    final savedAppStyle = LocalStore.setting<int?>('appStyle', null);
+    final migratedToExpress = LocalStore.setting<bool>('appStyle_default_express_v1', false);
+    if (savedAppStyle == null && !migratedToExpress) {
+      _appStyle = 2;
+      unawaited(LocalStore.writeSetting('appStyle', 2));
+      unawaited(LocalStore.writeSetting('appStyle_default_express_v1', true));
+    } else {
+      _appStyle = savedAppStyle ?? 2;
+    }
     _celebration = CelebrationStyle.values[LocalStore.setting('celebration', 0)
         .clamp(0, CelebrationStyle.values.length - 1)];
     _appLock = LocalStore.setting('appLock', false);
@@ -507,6 +520,7 @@ class SettingsController extends ChangeNotifier {
     _autoBackup = value;
     await LocalStore.writeSetting('autoBackup', value);
     notifyListeners();
+    unawaited(BackupTaskManager.updateSchedule(value));
     if (value > 0) await runAutoBackup(force: true);
   }
 
@@ -525,6 +539,7 @@ class SettingsController extends ChangeNotifier {
           : last.add(const Duration(days: 7));
       if (DateTime.now().isBefore(due)) return false;
     }
+
     final path = await BackupService.runAuto(
       folder: _autoBackupFolder,
       readable: _readableCopy,
@@ -678,6 +693,7 @@ class SettingsController extends ChangeNotifier {
   Future<void> setAppStyle(int value) async {
     _appStyle = value;
     await LocalStore.writeSetting('appStyle', value);
+    await LocalStore.writeSetting('appStyle_default_express_v1', true);
     notifyListeners();
   }
 
